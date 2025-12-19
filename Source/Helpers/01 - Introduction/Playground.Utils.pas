@@ -31,7 +31,7 @@ procedure ClearScreen;
 
 implementation
 
-{$REGION 'support procedures'}
+{$REGION 'Support Routines'}
 function GetExceptionString(E: Exception): string;
 begin
   if not Assigned(E) then
@@ -57,10 +57,8 @@ end;
 procedure NextSlide;
 begin
   Writeln(sLineBreak+
-  '''
-  Press Enter key for the next slide,
-  or Ctrl+C to terminate;
-  ''');
+  'Press Enter key for the next slide,'+sLineBreak+
+  'or Ctrl+C to terminate.');
   Readln;
   ClearScreen;
 end;

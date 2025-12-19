@@ -8,7 +8,7 @@
 (*  If you share or distribute these source files, please include a reference *)
 (*  to the original repository linked above.                                  *)
 
-program _01_Introduction.SimpleTypes;
+program Intro_01.SimpleTypes;
 
 {$APPTYPE CONSOLE}
 

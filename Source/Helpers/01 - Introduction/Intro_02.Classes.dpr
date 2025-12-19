@@ -8,7 +8,7 @@
 (*  If you share or distribute these source files, please include a reference *)
 (*  to the original repository linked above.                                  *)
 
-program _02_Introduction.Classes;
+program Intro_02.Classes;
 
 {$APPTYPE CONSOLE}
 
@@ -20,7 +20,7 @@ uses
   System.Generics.Collections,
   Data.Bind.ObjectScope,
   Playground.Utils in 'Playground.Utils.pas',
-  _02_Introduction.Classes.res in '_02_Introduction.Classes.res.pas';
+  Intro_02.Classes.res in 'Intro_02.Classes.res.pas';
 
 type
   TStringsHelper = class helper for TStrings
@@ -88,7 +88,7 @@ end;
 
 {$ENDREGION}
 
-{$REGION 'Support routines'}
+{$REGION 'Support Routines'}
 
 function NewStrings(const AString: string): TStrings;
 begin
@@ -130,7 +130,8 @@ var
   lAnswer: string;
 
 begin
-  Write(sLineBreak+'Press ''p'' key if you like print TStrings instance content or '+
+  Write(sLineBreak+'Press ''p'' key  and then Enter key '+
+    'if you like print TStrings instance content or '+
     'press Enter key continue...');
   Readln(lAnswer);
   ClearLine;

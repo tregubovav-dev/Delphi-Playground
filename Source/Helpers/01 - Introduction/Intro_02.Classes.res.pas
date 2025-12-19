@@ -8,7 +8,7 @@
 (*  If you share or distribute these source files, please include a reference *)
 (*  to the original repository linked above.                                  *)
 
-unit _02_Introduction.Classes.res;
+unit Intro_02.Classes.res;
 
 interface
 
