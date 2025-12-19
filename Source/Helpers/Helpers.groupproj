@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{2B32007E-6813-4915-91ED-E7BE917D3C8A}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="01 - Introduction\Intro_01.SimpleTypes.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="01 - Introduction\Intro_02.Classes.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="Intro_01_SimpleTypes">
+        <MSBuild Projects="01 - Introduction\Intro_01.SimpleTypes.dproj"/>
+    </Target>
+    <Target Name="Intro_01_SimpleTypes:Clean">
+        <MSBuild Projects="01 - Introduction\Intro_01.SimpleTypes.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Intro_01_SimpleTypes:Make">
+        <MSBuild Projects="01 - Introduction\Intro_01.SimpleTypes.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Intro_02_Classes">
+        <MSBuild Projects="01 - Introduction\Intro_02.Classes.dproj"/>
+    </Target>
+    <Target Name="Intro_02_Classes:Clean">
+        <MSBuild Projects="01 - Introduction\Intro_02.Classes.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Intro_02_Classes:Make">
+        <MSBuild Projects="01 - Introduction\Intro_02.Classes.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="Intro_01_SimpleTypes;Intro_02_Classes"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="Intro_01_SimpleTypes:Clean;Intro_02_Classes:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="Intro_01_SimpleTypes:Make;Intro_02_Classes:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
