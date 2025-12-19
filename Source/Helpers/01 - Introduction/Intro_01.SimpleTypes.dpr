@@ -16,7 +16,7 @@ program Intro_01.SimpleTypes;
 
 uses
   System.SysUtils,
-  Playground.Utils in 'Playground.Utils.pas';
+  Playground.Utils;
 
 {$REGION 'Example #1: Integer to String Conversion'}
 function GetClassicSum(AItem1, AItem2: integer): string;
@@ -101,7 +101,8 @@ begin
   Writeln('Objective: Parse strings to numbers, multiply, and format.');
 
   Writeln(sLineBreak+'  [Classic Approach]');
-  Writeln('  lFactor1:=StrToInt(AFactor1);');
+  Writeln('  lFactor1:=StrToInt(AFactor1); lFactor2:=StrToFloat(AFactor2); '+
+    'lProductStr:=FloatToStr(lFactor1*lFactor2);');
   Writeln('  Result: '+GetClassicProduct('3', '2.5E-2'));
 
   Writeln(sLineBreak+'  [Modern Approach]');
@@ -110,7 +111,7 @@ begin
 end;
 {$ENDREGION}
 
-{$REGION 'Example #3'}
+{$REGION 'Example #3: String Transformation'}
 function GetStringUpdateClassic(AStr: string): string;
 begin
   AStr:=Trim(AStr);
@@ -137,46 +138,20 @@ end;
 
 procedure Example3;
 begin
-  Writeln(sLineBreak+'--- Example #3. ---');
-  Writeln(
-    'Transforms string as below and returns it as result'+sLineBreak+
-    '* Trims unprintable characters and spaces'+sLineBreak+
-    '* Transforms first character to upper case according Unicode specification'+sLineBreak+
-    '* Transforms rest of the string to lower case according Unicode specification'+sLineBreak+
-    '* Adds the final dot (''.'') character'+sLineBreak+
-    '* Quotes the result.)'
-    );
-  Writeln(sLineBreak+'  Classic code:'+sLineBreak);
-  Writeln(sLineBreak+'  function call: "GetStringUpdateClassic(''  this is a sample string     '')');
-  Writeln('  Returns: '+
-    GetStringUpdateClassic(
-      '  this is a sample string     '
-    )
-  );
+  Writeln(sLineBreak + '--- Example #3: String Transformation ---');
+  Writeln('Objective: Trim, Title Case, add Dot, and Quote.');
 
-  Writeln(sLineBreak+'  function call: "GetStringUpdateClassic(#8#9''to jest prosty ciąg ZNAKÓW     '')');
-  Writeln('  Returns: '+
-    GetStringUpdateClassic
-    (
-      #8#9'to jest prosty ciąg ZNAKÓW     '
-    )
-  );
+  Writeln(sLineBreak + '  [Classic Approach]');
+  Writeln('  QuotedStr(UpperCase(AStr[1]) + LowerCase(Copy(AStr, 2)) + ''.'');');
+  Writeln('  Result: ' + GetStringUpdateClassic('  this is a sample string     '));
+  Writeln('  Result (Unicode): ' + GetStringUpdateClassic(#8#9'to jest prosty ciąg ZNAKÓW     '));
 
-  Writeln(sLineBreak+'  Modern code:'+sLineBreak);
-  Writeln(sLineBreak+'  function call: "GetStringUpdateModern(''  this is a sample string     '')');
-  Writeln('  Returns: '+
-    GetStringUpdateModern(
-      '  this is a sample string     '
-    )
-  );
-
-  Writeln(sLineBreak+'  function call: "GetStringUpdateModern(#8#9''to jest prosty ciąg ZNAKÓW     '')');
-  Writeln('  Returns: '+
-    GetStringUpdateModern(
-      #8#9'to jest prosty ciąg ZNAKÓW     '
-    )
-  );
+  Writeln(sLineBreak + '  [Modern Approach]');
+  Writeln('  (AStr.Substring(0, 1).ToUpper + ...).QuotedString('''');');
+  Writeln('  Result: ' + GetStringUpdateModern('  this is a sample string     '));
+  Writeln('  Result (Unicode): ' + GetStringUpdateModern(#8#9'to jest prosty ciąg ZNAKÓW     '));
 end;
+
 {$ENDREGION}
 
 begin

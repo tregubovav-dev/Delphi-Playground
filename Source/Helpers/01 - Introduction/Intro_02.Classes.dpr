@@ -19,8 +19,10 @@ uses
   System.Classes,
   System.Generics.Collections,
   Data.Bind.ObjectScope,
-  Playground.Utils in 'Playground.Utils.pas',
+  Playground.Utils,
   Intro_02.Classes.res in 'Intro_02.Classes.res.pas';
+
+{$REGION 'TStringsHelper Declaration and Implementation'}
 
 type
   TStringsHelper = class helper for TStrings
@@ -33,8 +35,6 @@ type
       AAddDivider: boolean = False; ADivider: string = ''): TStrings; overload;
     property IsEmpty: boolean read GetIsEmpty;
   end;
-
-{$REGION 'TStringsHelper Implementation'}
 
 { TStringsHelper }
 
@@ -159,6 +159,8 @@ end;
 
 {$ENDREGION}
 
+{$REGION 'Example #1: The "IsEmpty" Property'}
+
 procedure Example1;
 var
   lStrings: TStrings;
@@ -190,6 +192,10 @@ begin
   end;
 end;
 
+{$ENDREGION}
+
+{$REGION 'Example #2: The "Append" Method'}
+
 procedure Example2;
 var
   lMainList, lSourceList: TStrings;
@@ -217,6 +223,10 @@ begin
     lMainList.Free;
   end;
 end;
+
+{$ENDREGION}
+
+{$REGION 'Example #3: Fluent Interface (Method Chaining)'}
 
 procedure Example3;
 var
@@ -261,6 +271,10 @@ begin
     lPanagramList.Free;
   end;
 end;
+
+{$ENDREGION}
+
+{$REGION 'Example #4: Batch Appending'}
 
 procedure Example4;
 const
@@ -309,6 +323,8 @@ begin
     lMainList.Free;
   end;
 end;
+
+{$ENDREGION}
 
 begin
   try
