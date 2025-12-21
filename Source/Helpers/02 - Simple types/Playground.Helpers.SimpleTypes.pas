@@ -32,6 +32,7 @@ type
   private
     function GetAsInteger: integer; {$IFNDEF DEBUG}inline;{$ENDIF}
     procedure SetAsInteger(Value: integer); {$IFNDEF DEBUG}inline;{$ENDIF}
+    function GetAsStringDefault: string; {$IFNDEF DEBUG}inline;{$ENDIF}
   public
     /// <summary>Converts TMyBool to Integer (1=True, 0=False).</summary>
     class function ToInteger(const Value: TMyBool): integer; static;
@@ -65,6 +66,7 @@ type
       overload; {$IFNDEF DEBUG}inline;{$ENDIF}
 
     property AsInteger: integer read GetAsInteger write SetAsInteger;
+    property AsString: string read GetAsStringDefault;
   end;
 {$ENDREGION}
 
@@ -271,6 +273,11 @@ end;
 procedure TMyBoolHelper.SetAsInteger(Value: integer);
 begin
   Self:=FromInteger(Value);
+end;
+
+function TMyBoolHelper.GetAsStringDefault: string;
+begin
+  Result:=ToString('True', 'False');
 end;
 
 class function TMyBoolHelper.FromInteger(const Value: integer): TMyBool;
