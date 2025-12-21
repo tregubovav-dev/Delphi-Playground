@@ -9,6 +9,9 @@
         <Projects Include="01 - Introduction\Intro_02.Classes.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="02 - Simple types\SimpleTypes_01_CustomBoolean.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -35,14 +38,23 @@
     <Target Name="Intro_02_Classes:Make">
         <MSBuild Projects="01 - Introduction\Intro_02.Classes.dproj" Targets="Make"/>
     </Target>
+    <Target Name="SimpleTypes_01_CustomBoolean">
+        <MSBuild Projects="02 - Simple types\SimpleTypes_01_CustomBoolean.dproj"/>
+    </Target>
+    <Target Name="SimpleTypes_01_CustomBoolean:Clean">
+        <MSBuild Projects="02 - Simple types\SimpleTypes_01_CustomBoolean.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SimpleTypes_01_CustomBoolean:Make">
+        <MSBuild Projects="02 - Simple types\SimpleTypes_01_CustomBoolean.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="Intro_01_SimpleTypes;Intro_02_Classes"/>
+        <CallTarget Targets="Intro_01_SimpleTypes;Intro_02_Classes;SimpleTypes_01_CustomBoolean"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Intro_01_SimpleTypes:Clean;Intro_02_Classes:Clean"/>
+        <CallTarget Targets="Intro_01_SimpleTypes:Clean;Intro_02_Classes:Clean;SimpleTypes_01_CustomBoolean:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Intro_01_SimpleTypes:Make;Intro_02_Classes:Make"/>
+        <CallTarget Targets="Intro_01_SimpleTypes:Make;Intro_02_Classes:Make;SimpleTypes_01_CustomBoolean:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
