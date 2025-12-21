@@ -12,6 +12,15 @@
         <Projects Include="02 - Simple types\SimpleTypes_01_CustomBoolean.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="02 - Simple types\SimpleTypes_02_CustomInteger.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="02 - Simple types\SimpleTypes_03_SimpleEnum.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="02 - Simple types\SimpleTypes_04_DynamicArray.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -47,14 +56,41 @@
     <Target Name="SimpleTypes_01_CustomBoolean:Make">
         <MSBuild Projects="02 - Simple types\SimpleTypes_01_CustomBoolean.dproj" Targets="Make"/>
     </Target>
+    <Target Name="SimpleTypes_02_CustomInteger">
+        <MSBuild Projects="02 - Simple types\SimpleTypes_02_CustomInteger.dproj"/>
+    </Target>
+    <Target Name="SimpleTypes_02_CustomInteger:Clean">
+        <MSBuild Projects="02 - Simple types\SimpleTypes_02_CustomInteger.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SimpleTypes_02_CustomInteger:Make">
+        <MSBuild Projects="02 - Simple types\SimpleTypes_02_CustomInteger.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="SimpleTypes_03_SimpleEnum">
+        <MSBuild Projects="02 - Simple types\SimpleTypes_03_SimpleEnum.dproj"/>
+    </Target>
+    <Target Name="SimpleTypes_03_SimpleEnum:Clean">
+        <MSBuild Projects="02 - Simple types\SimpleTypes_03_SimpleEnum.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SimpleTypes_03_SimpleEnum:Make">
+        <MSBuild Projects="02 - Simple types\SimpleTypes_03_SimpleEnum.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="SimpleTypes_04_DynamicArray">
+        <MSBuild Projects="02 - Simple types\SimpleTypes_04_DynamicArray.dproj"/>
+    </Target>
+    <Target Name="SimpleTypes_04_DynamicArray:Clean">
+        <MSBuild Projects="02 - Simple types\SimpleTypes_04_DynamicArray.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SimpleTypes_04_DynamicArray:Make">
+        <MSBuild Projects="02 - Simple types\SimpleTypes_04_DynamicArray.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="Intro_01_SimpleTypes;Intro_02_Classes;SimpleTypes_01_CustomBoolean"/>
+        <CallTarget Targets="Intro_01_SimpleTypes;Intro_02_Classes;SimpleTypes_01_CustomBoolean;SimpleTypes_02_CustomInteger;SimpleTypes_03_SimpleEnum;SimpleTypes_04_DynamicArray"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Intro_01_SimpleTypes:Clean;Intro_02_Classes:Clean;SimpleTypes_01_CustomBoolean:Clean"/>
+        <CallTarget Targets="Intro_01_SimpleTypes:Clean;Intro_02_Classes:Clean;SimpleTypes_01_CustomBoolean:Clean;SimpleTypes_02_CustomInteger:Clean;SimpleTypes_03_SimpleEnum:Clean;SimpleTypes_04_DynamicArray:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Intro_01_SimpleTypes:Make;Intro_02_Classes:Make;SimpleTypes_01_CustomBoolean:Make"/>
+        <CallTarget Targets="Intro_01_SimpleTypes:Make;Intro_02_Classes:Make;SimpleTypes_01_CustomBoolean:Make;SimpleTypes_02_CustomInteger:Make;SimpleTypes_03_SimpleEnum:Make;SimpleTypes_04_DynamicArray:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
