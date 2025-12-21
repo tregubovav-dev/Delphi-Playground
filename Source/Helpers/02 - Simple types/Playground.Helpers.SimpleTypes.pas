@@ -442,7 +442,7 @@ end;
 {$ENDIF}
 class function TFruitHelper.FromInteger(const Value: integer): TFruit;
 begin
-  if (Value >= Ord(cMinFruit)) and (Value <= Ord(cMaxFruit)) then
+  if (Value >= Ord(MinFruit)) and (Value <= Ord(MaxFruit)) then
     Result:=TFruit(Value)
   else
     Result:=frUnknown;
@@ -527,7 +527,8 @@ end;
 
 function TStringArrayHelper.Add(const Value: string): TStringArray;
 begin
-  Result:=Add(Self, Value);
+  Self:=Add(Self, Value);
+  Result:=Self;
 end;
 
 class function TStringArrayHelper.Insert(AArray: TStringArray;
@@ -540,7 +541,8 @@ end;
 function TStringArrayHelper.Insert(const Value: string;
   AIndex: NativeUInt): TStringArray;
 begin
-  Result:=Insert(Self, Value, AIndex);
+  Self:=Insert(Self, Value, AIndex);
+  Result:=Self;
 end;
 
 class function TStringArrayHelper.Delete(AArray: TStringArray;
@@ -552,7 +554,8 @@ end;
 
 function TStringArrayHelper.Delete(AIndex, ACount: NativeUInt): TStringArray;
 begin
-  Result:=Delete(Self, AIndex, ACount);
+  Self:=Delete(Self, AIndex, ACount);
+  Result:=Self;
 end;
 
 class function TStringArrayHelper.Join(ASeparator: Char; const AArray: TStringArray): string;
