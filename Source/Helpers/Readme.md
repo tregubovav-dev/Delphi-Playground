@@ -16,8 +16,21 @@ Contains the core demos showing the "Why" and "How" of Helpers.
     *   **Scenario:** Extending `TStrings` without inheritance.
     *   **Key Feature:** Demonstrates chaining methods (e.g., `.Append(A).Append(B)`).
 
-### `02 - Simple Types` (Planned)
-Advanced examples for implementing helpers on primitive types (Integers, Floats, Strings).
+### `02 - Simple Types`
+Demonstrates how to overcome the limitation that Record Helpers cannot be attached to generic primitive types directly without conflict.
+
+*   **SimpleTypes_01_CustomBoolean.pas**
+    *   **Concept:** The "Distinct Type" Strategy (`type TMyBool = type Boolean`).
+    *   **Feature:** Adds `ToString('Yes', 'No')` and parsing capabilities while maintaining assignment compatibility with standard `Boolean`.
+*   **SimpleTypes_02_CustomInteger.pas**
+    *   **Concept:** Domain Logic on Primitives.
+    *   **Feature:** Validation (`IsBetween`), clamping (`EnsureBetween`), and property checks (`IsEven`) on a distinct integer type (`TMyInt`).
+*   **SimpleTypes_03_SimpleEnum.pas**
+    *   **Concept:** Metadata Attachment.
+    *   **Feature:** Safely converting Integers to Enums (`TFruit`) and attaching string names for display without RTTI overhead.
+*   **SimpleTypes_04_DynamicArray.pas**
+    *   **Concept:** Fluent Arrays.
+    *   **Feature:** Turns `TArray<string>` into a powerful list-like object with `Add`, `Insert`, `Delete`, and `Join` methods.
 
 ### `03 - Enums and Sets` (Planned)
 Helpers for C-style enumerations, bitmasks, and set operations.
