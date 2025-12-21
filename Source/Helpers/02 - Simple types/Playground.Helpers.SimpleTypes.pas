@@ -134,9 +134,9 @@ type
   TFruitHelper = record helper for TFruit
   public const
     /// <summary>The first valid fruit (skipping Unknown).</summary>
-    cMinFruit = Succ(Low(TFruit));
+    MinFruit = Succ(Low(TFruit));
     /// <summary>The last valid fruit.</summary>
-    cMaxFruit = High(TFruit);
+    MaxFruit = High(TFruit);
     /// <summary>The default/invalid fruit value.</summary>
     cUnknownFruit = Low(TFruit);
 
