@@ -16,6 +16,7 @@ uses
   System.SysUtils;
 
 type
+{$REGION 'TMyBool type and TMyBoolHelper helper declaration'}
   // ---------------------------------------------------------------------------
   // TMyBool - Distinct Boolean Type
   // Demonstrates how to attach a helper to a specific boolean usage
@@ -65,8 +66,9 @@ type
 
     property AsInteger: integer read GetAsInteger write SetAsInteger;
   end;
+{$ENDREGION}
 
-
+{$REGION 'TMyInt type and TMyIntHelper helper declaration'}
   // ---------------------------------------------------------------------------
   // TMyInt - Distinct Integer Type
   // Demonstrates adding domain-specific logic to integers (e.g., IDs, Counts).
@@ -111,6 +113,9 @@ type
       overload; static; {$IFNDEF DEBUG}inline;{$ENDIF}
     function IsMax: boolean; overload; {$IFNDEF DEBUG}inline;{$ENDIF}
   end;
+{$ENDREGION}
+
+{$REGION 'TFruit enumeration type and TFruitHelper helper declaration'}
 
   // ---------------------------------------------------------------------------
   // TFruit - Enumeration Type
@@ -170,6 +175,9 @@ type
     /// <summary>Gets or Sets the ordinal value of the fruit.</summary>
     property AsInteger: integer read GetAsInteger write SetAsInteger;
   end;
+{$ENDREGION}
+
+{$REGION 'TStringArray array type and TStringArrayHelper helper declaration'}
 
   // ---------------------------------------------------------------------------
   // TStringArray - Dynamic Array Helper
@@ -244,6 +252,7 @@ type
     /// <summary>Accesses elements by Index.</summary>
     property &String[Index: NativeUInt]: string read GetString write SetString;
   end;
+{$ENDREGION}
 
 implementation
 
@@ -251,6 +260,7 @@ uses
   System.StrUtils,
   System.SysConst;
 
+{$REGION 'TMyBool type and TMyBoolHelper helper implementation'}
 { TMyBoolHelper }
 
 function TMyBoolHelper.GetAsInteger: integer;
@@ -334,6 +344,9 @@ function TMyBoolHelper.TryFromString(const Value, ATrueStr, AFalseStr: string;
 begin
   Result:=TryFromString(Value, ATrueStr, AFalseStr, ACaseSensitive, Self);
 end;
+{$ENDREGION}
+
+{$REGION 'TMyInt type and TMyIntHelper helper implementation'}
 
 { TMyIntHelper }
 
@@ -393,6 +406,9 @@ function TMyIntHelper.IsMax: boolean;
 begin
   Result:=IsMax(Self);
 end;
+{$ENDREGION}
+
+{$REGION 'TFruit enumeration type and TFruitHelper helper implementation'}
 
 { TFruitHelper }
 
@@ -459,6 +475,9 @@ begin
   end;
   Result:=Low(TFruit);
 end;
+{$ENDREGION}
+
+{$REGION 'TStringArray array type and TStringArrayHelper helper declaration'}
 
 { TStringArrayHelper }
 
@@ -574,5 +593,6 @@ function TStringArrayHelper.Join(ASeparator: char): string;
 begin
   Result:=Join(ASeparator, Self);
 end;
+{$ENDREGION}
 
 end.
