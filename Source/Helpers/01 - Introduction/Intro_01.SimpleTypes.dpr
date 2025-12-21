@@ -16,7 +16,7 @@ program Intro_01.SimpleTypes;
 
 uses
   System.SysUtils,
-  Playground.Utils;
+  Playground.Utils in '..\..\Common\Playground.Utils.pas';
 
 {$REGION 'Example #1: Integer to String Conversion'}
 function GetClassicSum(AItem1, AItem2: integer): string;

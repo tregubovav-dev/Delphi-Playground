@@ -19,8 +19,8 @@ uses
   System.Classes,
   System.Generics.Collections,
   Data.Bind.ObjectScope,
-  Playground.Utils,
-  Intro_02.Classes.res in 'Intro_02.Classes.res.pas';
+  Intro_02.Classes.res in 'Intro_02.Classes.res.pas',
+  Playground.Utils in '..\..\Common\Playground.Utils.pas';
 
 {$REGION 'TStringsHelper Declaration and Implementation'}
 
