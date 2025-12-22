@@ -434,12 +434,14 @@ begin
   Result:=Ord(Value);
 end;
 
+{$REGION 'Range check OFF'}
 {$IFDEF DEBUG}
   {$IFOPT R+}
     {$R-}
     {$DEFINE R_ON}
   {$ENDIF}
 {$ENDIF}
+{$ENDREGION}
 class function TFruitHelper.FromInteger(const Value: integer): TFruit;
 begin
   if (Value >= Ord(MinFruit)) and (Value <= Ord(MaxFruit)) then
@@ -447,12 +449,14 @@ begin
   else
     Result:=frUnknown;
 end;
+{$REGION 'Range check ON'}
 {$IFDEF DEBUG}
   {$IFDEF R_ON}
     {$R+}
     {$UNDEF R_ON}
   {$ENDIF}
 {$ENDIF}
+{$ENDREGION}
 
 class function TFruitHelper.ToString(const Value: TFruit;
   const ANames: TNames): string;
