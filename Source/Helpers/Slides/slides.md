@@ -155,6 +155,150 @@ Clone the repository to try the demos:
 
 <!-- _class: lead -->
 
-# Thank You!
+# Section 2: Simple Types
+## Overcoming the "Last Helper Wins" Rule
 
-**License:** MIT (Educational Use)
+**Source:** `Source/Helpers/02 - Simple Types`
+
+---
+
+<!-- _class: default -->
+
+# The Problem: Helper Conflicts
+
+If you declare a global helper for `Integer`, you might break code that relies on `System.SysUtils.TIntegerHelper`.
+
+~~~pascal
+type
+  TMyHelper = record helper for Integer ... end;
+
+var I: Integer;
+begin
+  I.ToString; // Error! TMyHelper hides SysUtils.TIntegerHelper
+end;
+~~~
+
+### The Goal
+We want to add **Domain Logic** (validation, formatting) without breaking standard RTL features.
+
+---
+
+# The Solution: Distinct Types
+
+Pascal allows us to define a **Distinct Type** that shares the same memory structure but has a unique identity.
+
+~~~pascal
+type
+  // "type Integer" creates a distinct type
+  TMyInt = type Integer; 
+
+  // Now we attach the helper to OUR type
+  TMyIntHelper = record helper for TMyInt ... end;
+~~~
+
+> This allows `TMyInt` to have its own methods, separate from `Integer`.
+
+---
+
+# The Magic of "Type Compatibility"
+
+Even though they are distinct types, Pascal treats them as **Assignment Compatible** because the underlying data structure is identical.
+
+~~~pascal
+var
+  Std: Integer;
+  Mine: TMyInt;
+begin
+  Std := 10;
+  
+  // Works! Implicit assignment. No cast needed.
+  Mine := Std; 
+  
+  // Uses OUR helper methods
+  Mine.IsBetween(0, 100); 
+end;
+~~~
+---
+
+# Demo 1 & 2: Boolean & Integer (`TMyBool`)
+
+We can replace verbose formatting logic with clean, readable calls.
+
+**Classic:**
+~~~pascal
+if IsActive then S := 'Yes' else S := 'No';
+~~~
+
+**Helper Approach:**
+~~~pascal
+// TMyBool helper
+S := IsActive.ToString('Yes', 'No');
+~~~
+
+**Validation (`TMyInt`):**
+~~~pascal
+// TMyInt helper
+if Val.IsBetween(1, 100) then ...
+Val := Val.EnsureBetween(0, 50); // Clamping
+~~~
+
+---
+
+# Demo 3: Smarter Enums (`TFruit`)
+
+Enums are usually just numbers. We can attach **Metadata** (like names) directly to the type using a helper.
+
+~~~pascal
+type
+  TFruit = (frApple, frOrange);
+  
+  TFruitHelper = record helper for TFruit
+    const Names: array[TFruit] of string = ('Apple', 'Orange');
+    function ToString: string;
+  end;
+~~~
+
+**Usage:**
+~~~pascal
+// Calling static method on the Type
+Fruit := TFruit.FromInteger(99); // Safe! Returns frUnknown
+Writeln(Fruit.ToString);         // Prints "Unknown"
+~~~
+
+> No RTTI overhead. Just clean, compile-time logic.
+
+---
+
+# Demo 4: Fluent Arrays (`TStringArray`)
+
+Dynamic Arrays are powerful but primitive. We can give them a **Fluent Interface** to behave like a List.
+
+~~~pascal
+var Tags: TStringArray;
+
+Tags := TStringArray.Create(['Delphi']);
+
+Tags
+  .Add('Helpers')
+  .Insert('Pascal', 0)
+  .Delete(1, 1);
+  
+Writeln(Tags.Join(', ')); 
+// Output: Pascal, Helpers
+~~~
+
+> **Note:** The helper manages memory reallocation automatically via `Self := ...`.
+
+---
+
+# Summary
+
+| Pattern | Scenario | Benefit |
+| :--- | :--- | :--- |
+| **Distinct Type** | `type TMyInt = type Integer` | Avoids Helper conflicts. |
+| **Compatibility** | `MyInt := StandardInt` | Seamless integration. |
+| **Static Factory** | `TFruit.FromInteger` | Safe conversion logic. |
+| **Self Mutation** | `Tags.Add(...)` | In-place array modification. |
+
+### Next Steps
+Explore the code in `02 - Simple Types` to see the full implementation of the library unit.
