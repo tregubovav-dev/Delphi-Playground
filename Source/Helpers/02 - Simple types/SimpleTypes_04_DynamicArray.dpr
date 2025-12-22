@@ -1,3 +1,13 @@
+(*  Delphi Playground: Delphi and/or FreePascal Presentation Demos            *)
+(*  Source: https://github.com/tregubovav-dev/Delphi-Playground               *)
+(*                                                                            *)
+(*  This code is provided for educational and training purposes.              *)
+(*  The coding patterns and techniques demonstrated herein may be freely used *)
+(*  in any commercial or open-source project without restriction.             *)
+(*                                                                            *)
+(*  If you share or distribute these source files, please include a reference *)
+(*  to the original repository linked above.                                  *)
+
 program SimpleTypes_04_DynamicArray;
 
 {$APPTYPE CONSOLE}
