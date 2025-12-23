@@ -21,6 +21,9 @@
         <Projects Include="02 - Simple types\SimpleTypes_04_DynamicArray.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="03 - Enums and Sets\CStyleTypes_01_SimpleEnum.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -83,14 +86,23 @@
     <Target Name="SimpleTypes_04_DynamicArray:Make">
         <MSBuild Projects="02 - Simple types\SimpleTypes_04_DynamicArray.dproj" Targets="Make"/>
     </Target>
+    <Target Name="CStyleTypes_01_SimpleEnum">
+        <MSBuild Projects="03 - Enums and Sets\CStyleTypes_01_SimpleEnum.dproj"/>
+    </Target>
+    <Target Name="CStyleTypes_01_SimpleEnum:Clean">
+        <MSBuild Projects="03 - Enums and Sets\CStyleTypes_01_SimpleEnum.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="CStyleTypes_01_SimpleEnum:Make">
+        <MSBuild Projects="03 - Enums and Sets\CStyleTypes_01_SimpleEnum.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="Intro_01_SimpleTypes;Intro_02_Classes;SimpleTypes_01_CustomBoolean;SimpleTypes_02_CustomInteger;SimpleTypes_03_SimpleEnum;SimpleTypes_04_DynamicArray"/>
+        <CallTarget Targets="Intro_01_SimpleTypes;Intro_02_Classes;SimpleTypes_01_CustomBoolean;SimpleTypes_02_CustomInteger;SimpleTypes_03_SimpleEnum;SimpleTypes_04_DynamicArray;CStyleTypes_01_SimpleEnum"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Intro_01_SimpleTypes:Clean;Intro_02_Classes:Clean;SimpleTypes_01_CustomBoolean:Clean;SimpleTypes_02_CustomInteger:Clean;SimpleTypes_03_SimpleEnum:Clean;SimpleTypes_04_DynamicArray:Clean"/>
+        <CallTarget Targets="Intro_01_SimpleTypes:Clean;Intro_02_Classes:Clean;SimpleTypes_01_CustomBoolean:Clean;SimpleTypes_02_CustomInteger:Clean;SimpleTypes_03_SimpleEnum:Clean;SimpleTypes_04_DynamicArray:Clean;CStyleTypes_01_SimpleEnum:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Intro_01_SimpleTypes:Make;Intro_02_Classes:Make;SimpleTypes_01_CustomBoolean:Make;SimpleTypes_02_CustomInteger:Make;SimpleTypes_03_SimpleEnum:Make;SimpleTypes_04_DynamicArray:Make"/>
+        <CallTarget Targets="Intro_01_SimpleTypes:Make;Intro_02_Classes:Make;SimpleTypes_01_CustomBoolean:Make;SimpleTypes_02_CustomInteger:Make;SimpleTypes_03_SimpleEnum:Make;SimpleTypes_04_DynamicArray:Make;CStyleTypes_01_SimpleEnum:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
