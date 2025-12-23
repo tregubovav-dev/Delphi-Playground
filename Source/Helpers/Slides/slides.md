@@ -8,6 +8,7 @@ style: |
   section { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
   code { font-family: 'Consolas', 'Courier New', monospace; background: #f0f0f0; padding: 2px 5px; border-radius: 4px; }
   pre { background: #1e1e1e; color: #d4d4d4; }
+  blockquote { font-size: 75%; color: #666; border-left: 4px solid #2b5797; background: #f9f9f9; padding: 10px; }
   h1 { color: #2b5797; }
   h2 { color: #20406b; }
   strong { color: #b91d47; }
@@ -302,3 +303,138 @@ Writeln(Tags.Join(', '));
 
 ### Next Steps
 Explore the code in `02 - Simple Types` to see the full implementation of the library unit.
+
+---
+
+<!-- _class: lead -->
+
+# Section 3: C-Style Enums
+## Bridging the Gap between Pascal and C
+
+**Source:** `Source/Helpers/03 - Enums`
+
+---
+
+<!-- _class: default -->
+
+# The Problem: Enum Mismatches
+
+**Pascal Enums** are strictly ordinal and contiguous (`0, 1, 2...`).
+**C Enums** are just named integers and can be sparse or negative.
+
+~~~c
+// C Declaration
+typedef enum {
+  STATUS_OFF   = 0,
+  STATUS_ERROR = -1,   // Negative!
+  STATUS_RESET = 1024  // Huge Gap!
+} t_status;
+~~~
+
+### The Challenge
+How do we map this to Pascal without losing type safety or using "Magic Numbers"?
+
+---
+
+# Scenario A: Contiguous Enums (`0..N`)
+
+If the C enum is continuous (`0, 1, 2`), we map it directly.
+
+**Helper Pattern:**
+~~~pascal
+TSimpleEnum = (steZero, steOne, steTwo);
+
+// Helper adds Type Safety
+property AsInteger: Integer read GetAsInteger;
+~~~
+
+**Usage:**
+~~~pascal
+// Instead of unsafe cast: Integer(MyEnum)
+C_API_Call(MyEnum.AsInteger); 
+
+// Safe conversion with Range Check
+MyEnum := TSimpleEnum.FromInteger(C_ReturnValue);
+~~~
+
+---
+
+# Scenario B: Sparse Enums (`-1, 1024...`)
+
+For non-contiguous values, we separate the **Logical Type** from the **Physical Value**.
+
+**1. Define Contiguous Pascal Enum:**
+~~~pascal
+// Standard Pascal Enum (0, 1, 2...)
+// Supports Sets, Loops, and RTTI
+TLegacyStatus = (lsError, lsOff, lsReset);
+~~~
+
+**2. Map in Helper:**
+~~~pascal
+// The "Dirty" values live here
+const cValues: array[TLegacyStatus] of Integer 
+      = (-1, 0, 1024);
+~~~
+
+---
+
+# The "Magic" Conversion
+
+The Helper transparently translates between the **Index** (Pascal) and the **Value** (C).
+
+**Pascal -> C (Lookup)**
+~~~pascal
+function ToInteger: Integer;
+begin
+  Result := cValues[Self]; 
+end;
+~~~
+
+**C -> Pascal (Reverse Lookup)**
+~~~pascal
+// Uses Binary Search or Scan
+class function FromInteger(Val: Integer): TLegacyStatus;
+~~~
+
+---
+
+# The "Pure Pascal" Benefit
+
+Because we use a **standard contiguous enum**, we gain features that are broken or impossible with sparse C-enums.
+
+**1. Sets (Bitmasks)**
+~~~pascal
+// Safe states: Off(0) or Warming(8)
+if Status in [lsOff, lsWarming] then ... 
+~~~
+
+**2. Iteration**
+~~~pascal
+// Loop easily despite gaps (-1...1024)
+for Status := Low(TLegacyStatus) to High(TLegacyStatus) do
+  Log(Status.AsInteger);
+~~~
+
+> **Note:** Explicitly assigned enums (`eVal = 5`) break `set of` support. Our approach keeps it.
+> **Contrast:** You cannot `for` loop over `-1, 0, 8, 1024` easily in C without an array. In Pascal + Helpers, it's native.
+
+---
+
+# Why this matters?
+
+This pattern allows your business logic to remain **Pure Pascal**.
+
+*   ✅ Works with `for..in` loops.
+*   ✅ Works with `set of TLegacyStatus`.
+*   ✅ Works with Array indices.
+*   ✅ **Zero** runtime overhead for the Type definition itself.
+
+**The "Dirty" C-mapping logic is encapsulated entirely inside the Helper.**
+
+```pascal
+// Clean Code
+if Status in [lsOff, lsReset] then ...
+
+// Dirty Work (Hidden)
+API_SetStatus(Status.AsInteger); // Sends 0 or 1024
