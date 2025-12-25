@@ -7,7 +7,8 @@ backgroundColor: #ffffff
 style: |
   section { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
   code { font-family: 'Consolas', 'Courier New', monospace; background: #f0f0f0; padding: 2px 5px; border-radius: 4px; }
-  pre { background: #1e1e1e; color: #d4d4d4; }
+  pre { background: #1e1e1e; color: #d4d4d4; font-size: 18px; }
+  /* Make Notes smaller and distinct */
   blockquote { font-size: 75%; color: #666; border-left: 4px solid #2b5797; background: #f9f9f9; padding: 10px; }
   h1 { color: #2b5797; }
   h2 { color: #20406b; }
@@ -219,6 +220,7 @@ begin
   Mine.IsBetween(0, 100); 
 end;
 ~~~
+
 ---
 
 # Demo 1 & 2: Boolean & Integer (`TMyBool`)
@@ -417,7 +419,6 @@ for Status := Low(TLegacyStatus) to High(TLegacyStatus) do
 ~~~
 
 > **Note:** Explicitly assigned enums (`eVal = 5`) break `set of` support. Our approach keeps it.
-> **Contrast:** You cannot `for` loop over `-1, 0, 8, 1024` easily in C without an array. In Pascal + Helpers, it's native.
 
 ---
 
@@ -432,9 +433,127 @@ This pattern allows your business logic to remain **Pure Pascal**.
 
 **The "Dirty" C-mapping logic is encapsulated entirely inside the Helper.**
 
-```pascal
+~~~pascal
 // Clean Code
 if Status in [lsOff, lsReset] then ...
 
 // Dirty Work (Hidden)
 API_SetStatus(Status.AsInteger); // Sends 0 or 1024
+~~~
+
+---
+
+<!-- _class: lead -->
+
+# Section 4: Bitmasks & Sets
+## Taming C-Flags with Pascal Sets
+
+**Source:** `Source/Helpers/03 - Enums/CStyleTypes_03_Bitmasks.pas`
+
+---
+
+<!-- _class: default -->
+
+# The Problem: Bitwise Soup
+
+C APIs often use integer bitmasks for configuration.
+
+~~~c
+#define FLAG_READ  1  (1 << 0)
+#define FLAG_WRITE 2  (1 << 1)
+#define FLAG_ASYNC 8  (1 << 3) // Gap!
+
+// C Usage
+int flags = FLAG_READ | FLAG_ASYNC;
+if (flags & FLAG_WRITE) { ... }
+~~~
+
+**Pascal Issues:**
+*   `OR / AND` syntax is verbose compared to Sets.
+*   No type safety (it's just an Integer).
+*   Hard to debug (what is `9`?).
+
+---
+
+# The Solution: Pascal Sets
+
+We define a **Bit-aligned Enum** and a **Set**.
+
+~~~pascal
+type
+  TSimpleFlag = (flsRead, flsWrite, flsAsync);
+  TSimpleFlags = set of TSimpleFlag;
+~~~
+
+**The Challenge:**
+Pascal Sets are bit-arrays.
+`[flsRead, flsAsync]` = Bits 0 and 2 set.
+We need to convert this safely to a 32-bit Integer.
+
+---
+
+# The Helper: Safe Casting
+
+Direct casting (`Integer(MySet)`) is dangerous because Sets can be 1, 2, or 4 bytes. The Helper handles this safely.
+
+~~~pascal
+class function ToInteger(Value: TSimpleFlags): Integer;
+begin
+  // 1. Detect Size of Set
+  // 2. Load correct number of bytes (1, 2, or 4)
+  // 3. Mask unused bits
+  {$IF SizeOf(TSimpleFlags) = 1}
+    Result := PByte(@Value)^;
+  {$ELSEIF ...}
+    Result := PWord(@Value)^;
+  {$IFEND}
+  
+  Result := Result and cMask;
+end;
+~~~
+
+---
+
+# Usage: Clean & Fluent (1/2)
+
+Now we can use standard Pascal Set syntax for C-APIs.
+
+**Construction:**
+~~~pascal
+// Clean syntax, no "OR" operators
+lFlags := [flsRead, flsAsync]; 
+
+// Pass to C-API
+// Helper converts Set -> Integer automatically
+C_SetFlags(lFlags.AsInteger);
+~~~
+
+**Modification:**
+~~~pascal
+Include(lFlags, flsWrite); // Sets bit 1
+Exclude(lFlags, flsRead);  // Clears bit 0
+~~~
+
+---
+
+# Usage: Clean & Fluent (2/2)
+
+**Inspection:**
+~~~pascal
+// Read raw integer from C, convert to Set
+lFlags.AsInteger := C_GetFlags();
+
+// Use "in" operator instead of bitwise AND
+if flsAsync in lFlags then
+  Writeln('Async Mode On');
+~~~
+
+> **Result:** Type-safe, readable, and debuggable bitmasks without the visual noise of `|` and `&`.
+
+---
+
+<!-- _class: lead -->
+
+# Thank You!
+
+**License:** MIT (Educational Use)

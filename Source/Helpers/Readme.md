@@ -32,8 +32,18 @@ Demonstrates how to overcome the limitation that Record Helpers cannot be attach
     *   **Concept:** Fluent Arrays.
     *   **Feature:** Turns `TArray<string>` into a powerful list-like object with `Add`, `Insert`, `Delete`, and `Join` methods.
 
-### `03 - Enums and Sets` (Planned)
-Helpers for C-style enumerations, bitmasks, and set operations.
+### `03 - Enums and Sets`
+Demonstrates how to bridge the gap between Pascal's strict, safe Enums and C-style loose Enums and Bitmasks.
+
+*   **CStyleTypes_01_SimpleEnum.pas**
+    *   **Concept:** Zero-Cost Mapping.
+    *   **Feature:** Mapping a contiguous C-Enum (0..N) to a Pascal Enum using `Ord()` conversion in a Helper, keeping the API type-safe.
+*   **CStyleTypes_02_SparseEnum.pas**
+    *   **Concept:** Sparse Mapping Logic.
+    *   **Feature:** Handling non-contiguous C-Enums (`-1, 0, 1024`) by mapping them to a clean, iterable Pascal Enum via a Lookup Table in the Helper.
+*   **CStyleTypes_03_Bitmasks.pas**
+    *   **Concept:** Sets as Bitmasks.
+    *   **Feature:** Using `TSimpleFlagsHelper` to convert a standard Pascal `set of TEnum` into a raw Integer bitmask for C-APIs, enabling `Include/Exclude` syntax instead of messy bitwise `OR/AND` operations.
 
 ## Prerequisites
 *   **Compiler:** Delphi XE3 or newer (required for Helper support).
