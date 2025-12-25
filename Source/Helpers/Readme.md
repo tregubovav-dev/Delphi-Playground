@@ -45,6 +45,10 @@ Demonstrates how to bridge the gap between Pascal's strict, safe Enums and C-sty
     *   **Concept:** Sets as Bitmasks.
     *   **Feature:** Using `TSimpleFlagsHelper` to convert a standard Pascal `set of TEnum` into a raw Integer bitmask for C-APIs, enabling `Include/Exclude` syntax instead of messy bitwise `OR/AND` operations.
 
+*   **CStyleTypes_04_SparseBitmasks.pas**
+    *   **Concept:** Sparse Bitmasks (Explicit Ordinals).
+    *   **Feature:** Handling complex C-bitmasks with reserved "holes" (e.g., skipping bits 8-15) by aligning Pascal Enum ordinals directly to bit positions (`eVal = 1`) and using a Helper mask to sanitize data.
+
 ## Prerequisites
 *   **Compiler:** Delphi XE3 or newer (required for Helper support).
 *   **Target:** Console Application (Windows/Linux/macOS).
