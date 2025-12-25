@@ -8,12 +8,18 @@ style: |
   section { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
   code { font-family: 'Consolas', 'Courier New', monospace; background: #f0f0f0; padding: 2px 5px; border-radius: 4px; }
   pre { background: #1e1e1e; color: #d4d4d4; font-size: 18px; }
+
   /* Make Notes smaller and distinct */
   blockquote { font-size: 75%; color: #666; border-left: 4px solid #2b5797; background: #f9f9f9; padding: 10px; }
   h1 { color: #2b5797; }
   h2 { color: #20406b; }
   strong { color: #b91d47; }
----
+
+  /* Warning Slide Style */
+  section.warning h1 { color: #d9534f; }
+  section.warning strong { color: #d9534f; }
+  section.warning blockquote { border-left-color: #d9534f; background: #fff0f0; color: #a94442; }
+  ---
 
 # Modernizing Pascal
 ## Readability, Safety, and Sustainability with Helpers
