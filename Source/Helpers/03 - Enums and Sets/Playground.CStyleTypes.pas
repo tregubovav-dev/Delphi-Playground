@@ -132,8 +132,8 @@ typedef enum {
   STATUS_ERROR    = -1
 } t_status;
 
-void SOME_CTX_set_status(SOME_CTX *ctx, int enum_val);
-int SOME_CTX_get_simple_enum(SOME_CTX *ctx);
+int SOME_CTX_set_status(SOME_CTX *ctx, int enum_val);
+int SOME_CTX_get_status(SOME_CTX *ctx);
 
 *)
 
@@ -226,7 +226,7 @@ type
 {$REGION 'C-style Simple Flags'}
 
 (*
-/* C style flags (bit sets) */
+/* C style flags (bttmasks) */
 #define TEST_SIMPLE_FLAG_ZERO   1     /* bit 0: 2^0 = 1   */
 ...
 #define TEST_SIMPLE_FLAG_NINE  512    /* bit 9: 2^9 = 512 */
@@ -259,22 +259,25 @@ type
     cMask = $3FF; // Covers bits 0..9 (10 bits)
 
   private
-    class procedure InvalidTypeCast; static;
-    function GetAsInteger: integer; inline;
-    procedure SetAsInteger(Value: integer); inline;
+    class procedure InvalidTypeCast; static; {$IFNDEF DEBUG}inline;{$ENDIF}
+    function GetAsInteger: integer; {$IFNDEF DEBUG}inline;{$ENDIF}
+    procedure SetAsInteger(Value: integer); {$IFNDEF DEBUG}inline;{$ENDIF}
 
   public
     /// <summary>Converts the Enum to its bitmask value (1 shl Ord).</summary>
-    class function ToInteger(Value: TSimpleFlag): integer; static; inline;
+    class function ToInteger(Value: TSimpleFlag): integer; static;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>
     ///   Converts a raw integer to a Single Flag.
     ///   Raises EInvalidCast if Value is 0, has multiple bits set, or is out of range.
     /// </summary>
     class function FromInteger(Value: integer): TSimpleFlag; static;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>Checks if the single flag matches the integer value.</summary>
     function IsEqualTo(Value: integer): boolean; inline;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>Gets or Sets the integer value (1 shl N).</summary>
     property AsInteger: integer read GetAsInteger write SetAsInteger;
@@ -292,23 +295,26 @@ type
   public const
     cMask = TSimpleFlag.cMask;
   private
-    function GetAsInteger: integer; inline;
-    procedure SetAsInteger(Value: integer); inline;
+    function GetAsInteger: integer; {$IFNDEF DEBUG}inline;{$ENDIF}
+    procedure SetAsInteger(Value: integer); {$IFNDEF DEBUG}inline;{$ENDIF}
   public
     /// <summary>
     ///   Converts the Set to a 32-bit Integer bitmask.
     ///   Uses safe pointer casting and masking.
     /// </summary>
     class function ToInteger(Value: TSimpleFlags): integer; overload; static;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>
     ///   Converts a raw Integer bitmask to a Pascal Set.
     ///   Masks the input value to ensure safety.
     /// </summary>
     class function FromInteger(Value: integer): TSimpleFlags; overload; static;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>Checks if the Set's bitmask equals the integer value.</summary>
     function IsEqualTo(Value: integer): boolean; inline;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>Gets or Sets the bitmask value.</summary>
     property AsInteger: integer read GetAsInteger write SetAsInteger;
@@ -319,6 +325,130 @@ type
   function SOME_CTX_get_simple_flags(ACtx: PSomeCtx): integer; cdecl;
 
 {$ENDREGION}
+
+{$REGION 'C-style Sparse Flags'}
+
+(*
+/* Non-contiguous bitmasks  */
+/* bit zero (1) skipped for a reason */
+/* bits 2 to 7 are declared as consts */
+#define TEST_NC_FLAG_01         $0002    /* bit 0: 2^1 = 2         */
+...
+#define TEST_NC_FLAG_07         $0080    /* bit 7: 2^7 = 128       */
+/* bits 8 to 15 for internal usage
+...
+#define TEST_NC_FLAG_16         $10000   /* bit 16: 2^16 = 65536   */
+...
+#define TEST_NC_FLAG_22         $40000   /* bit 22: 2^22 = 4194304 */
+
+int SOME_CTX_set_nc_flags(SOME_CTX *ctx, int enum_val);
+int SOME_CTX_get_nc_flags(SOME_CTX *ctx);
+*)
+{----}
+{$REGION 'C-style Sparse Flags'}
+
+(*
+/* Non-contiguous bitmasks */
+/* bit zero (1) skipped */
+/* bits 1 to 7 are defined */
+#define TEST_NC_FLAG_01         $0002    /* bit 1: 2^1 = 2         */
+...
+#define TEST_NC_FLAG_07         $0080    /* bit 7: 2^7 = 128       */
+/* bits 8 to 15 skipped */
+#define TEST_NC_FLAG_16         $10000   /* bit 16: 2^16 = 65536   */
+...
+#define TEST_NC_FLAG_22         $40000   /* bit 22 */
+*)
+
+const
+  TEST_NC_FLAG_01   = 1 shl 1;
+  TEST_NC_FLAG_02   = 1 shl 2;
+  TEST_NC_FLAG_03   = 1 shl 3;
+  TEST_NC_FLAG_04   = 1 shl 4;
+  TEST_NC_FLAG_05   = 1 shl 5;
+  TEST_NC_FLAG_06   = 1 shl 6;
+  TEST_NC_FLAG_07   = 1 shl 7;
+
+  TEST_NC_FLAG_16   = 1 shl 16;
+  TEST_NC_FLAG_17   = 1 shl 17;
+  TEST_NC_FLAG_18   = 1 shl 18;
+  TEST_NC_FLAG_19   = 1 shl 19;
+  TEST_NC_FLAG_20   = 1 shl 20;
+  TEST_NC_FLAG_21   = 1 shl 21;
+  TEST_NC_FLAG_22   = 1 shl 22;
+
+type
+  /// <summary>
+  ///   Sparse Enumeration using Explicit Ordinals to match Bit Positions.
+  ///   Note: Iterating Low(TNcFlag)..High(TNcFlag) will visit invalid "holes".
+  ///   Iterating a "set of TNcFlag" is safe.
+  /// </summary>
+  TNcFlag = (
+    ncfl01 = 1 {bit 1}, ncfl02, ncfl03, ncfl04, ncfl05, ncfl06, ncfl07,
+    // Gap: bits 8..15 skipped
+    ncfl016 = 16 {bit 16}, ncfl17, ncfl18, ncfl19, ncfl20, ncfl21, ncfl22
+  );
+
+  /// <summary>Helper for individual sparse flags.</summary>
+  TNcFlagHelper = record helper for TNcFlag
+  public const
+    // Mask covering bits 1..7 and 16..22
+    cMask = $7F00FE;
+  private
+    class procedure InvalidTypeCast; static; {$IFNDEF DEBUG}inline;{$ENDIF}
+    function GetAsInteger: integer; {$IFNDEF DEBUG}inline;{$ENDIF}
+    procedure SetAsInteger(Value: integer); {$IFNDEF DEBUG}inline;{$ENDIF}
+  public
+    class function ToInteger(Value: TNcFlag): integer; static;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
+
+    /// <summary>
+    ///   Converts integer (power of 2) to Flag.
+    ///   Raises exception if value is 0, multi-bit, or falls in a "hole".
+    /// </summary>
+    class function FromInteger(Value: integer): TNcFlag; static;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
+
+    function IsEqualTo(Value: integer): boolean; inline;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
+
+    property AsInteger: integer read GetAsInteger write SetAsInteger;
+  end;
+
+  TNcFlags = set of TNcFlag;
+
+  /// <summary>Helper for Sets of sparse flags.</summary>
+  TNcFlagsHelper = record helper for TNcFlags
+  public const
+    cMask = TNcFlag.cMask;
+  private
+    class procedure InvalidTypeCast; static; {$IFNDEF DEBUG}inline;{$ENDIF}
+    function GetAsInteger: integer; {$IFNDEF DEBUG}inline;{$ENDIF}
+    procedure SetAsInteger(Value: integer); {$IFNDEF DEBUG}inline;{$ENDIF}
+  public
+    /// <summary>Safe cast from Set to 32-bit Integer.</summary>
+    class function ToInteger(Value: TNcFlags): integer; static;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
+
+    /// <summary>Strict conversion. Raises exception if garbage bits found.</summary>
+    class function FromInteger(Value: integer): TNcFlags; static;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
+
+    /// <summary>Safe conversion. Silently ignores garbage/hole bits.</summary>
+    class function SafeFromInteger(Value: integer): TNcFlags; static;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
+
+    function IsEqualTo(Value: integer): boolean; inline;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
+
+    property AsInteger: integer read GetAsInteger write SetAsInteger;
+  end;
+
+  // Mock C-API
+  function SOME_CTX_set_nc_flags(ACtx: PSomeCtx; Value: integer): integer; cdecl;
+  function SOME_CTX_get_nc_flags(ACtx: PSomeCtx): integer; cdecl;
+
+{$ENDREGION}{$ENDREGION}
 
 implementation
 
@@ -338,20 +468,14 @@ end;
 
 procedure SOME_CTX_do_with_simple_enum(ACtx: PSomeCtx; Value: integer); cdecl;
 begin
-  Writeln(
-    Format('  "C" routine "SOME_CTX_do_with_simple_enum" is called '+
-      'with parameters: ACtx = %p, Value = %d.', [ACtx, Value])
-  );
+  Writeln(Format('  [C-API] do_with_simple_enum. Setting %d', [Value]));
 end;
 
 function SOME_CTX_get_simple_enum(ACtx: PSomeCtx): integer; cdecl;
 begin
   // Return a valid random value for the simple enum range (0..7)
   Result:=Random(Ord(High(TSimpleTestEnum))+1);
-  Writeln(
-    Format('  "C" routine "SOME_CTX_get_simple_enum" is called '+
-      'with parameter: ACtx = %p; Returns = %d.', [ACtx, Result])
-  );
+  Writeln(Format('  [C-API] get_simple_enum called. Returning %d', [Result]));
 end;
 
 { TSimpleTestEnumHelper }
@@ -535,14 +659,14 @@ var
 function SOME_CTX_set_simple_flags(ACtx: PSomeCtx; Value: integer): integer; cdecl;
 begin
   GSimpleFlags:=Value;
-  Writeln(Format('  [C-API] set_simple_flags called setting value %x', [Value]));
+  Writeln(Format('  [C-API] set_simple_flags called setting value 0x%x', [Value]));
   Result:=0; // success
 end;
 
 function SOME_CTX_get_simple_flags(ACtx: PSomeCtx): integer; cdecl;
 begin
   Result:=GSimpleFlags;
-  Writeln(Format('  [C-API] get_simple_flags called. Returning %x', [Result]));
+  Writeln(Format('  [C-API] get_simple_flags called. Returning 0x%x', [Result]));
 end;
 
 { TSimpleFlagHelper }
@@ -572,14 +696,18 @@ var
   i: integer;
 
 begin
-  // check if Value in range of TEST_SIMPLE_FLAG_* constants
-  // and the only single bit is set.
+  // Check validity: Not zero, Power of 2 (single bit), Inside Mask
   if (Value = 0) or ((Value and (Value-1)) <> 0)
     or ((Value or cMask) <> cMask) then
     InvalidTypeCast;
+
+  // Find Log2 (Bit Index)
   i:=Ord(Low(TSimpleFlag));
   while (1 shl i) < Value do
     Inc(i);
+
+  // Cast index to Enum.
+  // Since we checked cMask, 'i' is guaranteed to be a valid ordinal.
   Result:=TSimpleFlag(i);
 end;
 
@@ -648,5 +776,145 @@ end;
 
 {$ENDREGION}
 
+{$REGION 'C-style Sparse Flags'}
+
+var
+  GNcFlags: integer = TEST_NC_FLAG_01 or TEST_NC_FLAG_22;
+
+// Mock procedures for C-API simulation
+function SOME_CTX_set_nc_flags(ACtx: PSomeCtx; Value: integer): integer; cdecl;
+begin
+  GNcFlags:=Value;
+  Writeln(Format('  [C-API] set_nc_flags called setting value 0x%x', [Value]));
+  Result:=0;
+end;
+
+function SOME_CTX_get_nc_flags(ACtx: PSomeCtx): integer; cdecl;
+begin
+  Result:=GNcFlags;
+  Writeln(Format('  [C-API] get_nc_flags called. Returning 0x%x', [Result]));
+end;
+
+  { TNcFlagHelper }
+
+class procedure TNcFlagHelper.InvalidTypeCast;
+begin
+  raise EInvalidCast.Create('Invalid TNcFlag Value.');
+end;
+
+
+function TNcFlagHelper.GetAsInteger: integer;
+begin
+  Result:=ToInteger(Self);
+end;
+
+procedure TNcFlagHelper.SetAsInteger(Value: integer);
+begin
+  Self:=FromInteger(Value);
+end;
+
+class function TNcFlagHelper.FromInteger(Value: integer): TNcFlag;
+var
+  i: integer;
+
+begin
+  // Check validity: Not zero, Power of 2 (single bit), Inside Mask
+  if (Value = 0) or ((Value and (Value-1)) <> 0)
+    or ((Value or cMask) <> cMask) then
+    InvalidTypeCast;
+
+  // Find Log2 (Bit Index)
+  i:=Ord(Low(TNcFlag));
+  while (1 shl i) < Value do
+    Inc(i);
+
+  // Cast index to Enum.
+  // Since we checked cMask, 'i' is guaranteed to be a valid ordinal (not a hole).
+  Result:=TNcFlag(i);
+end;
+
+class function TNcFlagHelper.ToInteger(Value: TNcFlag): integer;
+begin
+  // Explicit Ordinals match Bit Positions. Direct shift works.
+  Result:=(1 shl Ord(Value)) and cMask;
+end;
+
+function TNcFlagHelper.IsEqualTo(Value: integer): boolean;
+begin
+  Result:=AsInteger = Value;
+end;
+
+{ TNcFlagsHelper }
+
+class procedure TNcFlagsHelper.InvalidTypeCast;
+begin
+  raise EInvalidCast.Create('Invalid TNcFlags Value.');
+end;
+
+function TNcFlagsHelper.GetAsInteger: integer;
+begin
+  Result:=ToInteger(Self);
+end;
+
+procedure TNcFlagsHelper.SetAsInteger(Value: integer);
+begin
+  Self:=FromInteger(Value);
+end;
+
+{$REGION 'Range check OFF'}
+{$IFDEF DEBUG}
+  {$IFOPT R+}
+    {$R-}
+    {$DEFINE R_ON}
+  {$ENDIF}
+{$ENDIF}
+{$ENDREGION}
+class function TNcFlagsHelper.ToInteger(Value: TNcFlags): integer;
+begin
+// we need to be sure that the variable is correctly aligned
+{$IF SizeOf(TNcFlags) = 1 }
+  Result:=PByte(@Value)^;
+{$ELSEIF SizeOf(TNcFlags) = 2}
+  Result:=PWord(@Value)^;
+{$ELSEIF SizeOf(TNcFlags) = 4}
+  Result:=PCardinal(@Value)^;
+(* for 33+ bit sets and 64-bit result
+{$ELSEIF SizeOf(TNcFlags) = 8}
+  Result:=PUInt64(@Value)^;
+*)
+{$ELSE}
+  {$Message Fatal 'Pascal Set size exceeded return size.'}
+{$IFEND}
+  Result:=Result and cMask;
+end;
+{$REGION 'Range check ON'}
+{$IFDEF DEBUG}
+  {$IFDEF R_ON}
+    {$R+}
+    {$UNDEF R_ON}
+  {$ENDIF}
+{$ENDIF}
+{$ENDREGION}
+
+
+class function TNcFlagsHelper.FromInteger(Value: integer): TNcFlags;
+begin
+  if (Value or cMask) <> cMask then
+    InvalidTypeCast;
+  Result:=SafeFromInteger(Value);
+end;
+
+class function TNcFlagsHelper.SafeFromInteger(Value: integer): TNcFlags;
+begin
+  Value:=Value and cMask;
+  Result:=TNcFlags((@Value)^);
+end;
+
+function TNcFlagsHelper.IsEqualTo(Value: integer): boolean;
+begin
+  Result:=AsInteger = Value;
+end;
+
+{$ENDREGION}
 
 end.
