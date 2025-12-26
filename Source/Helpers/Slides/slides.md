@@ -1,17 +1,44 @@
 ---
 marp: true
 theme: default
-class: lead
 paginate: true
 backgroundColor: #ffffff
 style: |
-  section { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+  /* 1. Standard Slides (Left Aligned, Sidebar) */
+  section {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-left: 30px solid #2b5797; /* Delphi Blue Sidebar */
+    padding-left: 40px;
+    text-align: left; /* Force left align */
+  }
+
+  /* 2. Title/Divider Slides (Centered, No Sidebar) */
+  section.lead {
+    border-left: none;
+    padding-left: 50px; /* Center balance */
+    text-align: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* 3. Pagination Color */
+  section::after {
+    font-weight: bold;
+    color: #2b5797;
+  }
+
+  /* 4. Code & Typography */
   code { font-family: 'Consolas', 'Courier New', monospace; background: #f0f0f0; padding: 2px 5px; border-radius: 4px; }
   pre { background: #1e1e1e; color: #d4d4d4; font-size: 18px; }
-  blockquote { font-size: 75%; color: #666; border-left: 4px solid #2b5797; background: #f9f9f9; padding: 10px; }
+  blockquote { font-size: 75%; color: #666; border-left: 4px solid #b91d47; background: #f9f9f9; padding: 10px; }
+  
+  /* 5. Warning Slide */
   section.warning h1 { color: #d9534f; }
   section.warning strong { color: #d9534f; }
   section.warning blockquote { border-left-color: #d9534f; background: #fff0f0; color: #a94442; }
+
   h1 { color: #2b5797; }
   h2 { color: #20406b; }
   strong { color: #b91d47; }
@@ -154,14 +181,6 @@ lMainList
 ### Get the Code
 Clone the repository to try the demos:
 `github.com/tregubovav-dev/Delphi-Playground`
-
----
-
-<!-- _class: lead -->
-
-# Thank You!
-
-**License:** MIT (Educational Use)
 
 ---
 

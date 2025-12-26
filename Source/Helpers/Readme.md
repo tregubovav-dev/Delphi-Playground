@@ -58,7 +58,9 @@ Demonstrates how to wrap raw C-style Handles (`HKEY`, `HWND`, etc.) into safe, O
     *   **Benefit:** Turns `RegOpenKeyEx/RegCloseKey` into `Key.Open/Key.Close` while maintaining binary compatibility with the OS.   
 
 ## Prerequisites
-*   **Compiler:** Delphi XE3 or newer (required for Helper support).
+
+*   **Compiler:** **Delphi 10.4 Sydney** or newer.
+    *   *Why?* While Helpers were introduced in XE3, this project uses modern features like **Inline Variables** (10.3) and the **`AtomicCmpExchange`** overload with the `Success` parameter (10.4).
 *   **Target:** Console Application (Windows/Linux/macOS).
 
 ## How to Run

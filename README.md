@@ -11,4 +11,5 @@ Located in `Source\Helpers\`.
 A comprehensive guide to using Class and Record Helpers to improve code readability, safety, and sustainability.
 *   **01 - Introduction:** Basic syntax, Fluent Interfaces, and RTL extension.
 *   **02 - Simple Types:** Patterns for extending primitives (Boolean, Integer) using Distinct Types, plus safe Enums and fluent Arrays.
-*   **03 - Enums and Sets:** (Coming Soon) Advanced handling of C-style enumerations and bitmasks.
+*   **03 - Enums and Sets:** Advanced handling of C-style enumerations and bitmasks.
+*   **04 - C API Wrappers** Using C-style Handles as safe Object-Oriented interfaces.
