@@ -33,6 +33,9 @@
         <Projects Include="03 - Enums and Sets\CStyleTypes_04_SparseBitmasks.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="04 - C API Wrappers\CStyleTypes_01_OpaqueHandle.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -131,14 +134,23 @@
     <Target Name="CStyleTypes_04_SparseBitmasks:Make">
         <MSBuild Projects="03 - Enums and Sets\CStyleTypes_04_SparseBitmasks.dproj" Targets="Make"/>
     </Target>
+    <Target Name="CStyleTypes_01_OpaqueHandle">
+        <MSBuild Projects="04 - C API Wrappers\CStyleTypes_01_OpaqueHandle.dproj"/>
+    </Target>
+    <Target Name="CStyleTypes_01_OpaqueHandle:Clean">
+        <MSBuild Projects="04 - C API Wrappers\CStyleTypes_01_OpaqueHandle.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="CStyleTypes_01_OpaqueHandle:Make">
+        <MSBuild Projects="04 - C API Wrappers\CStyleTypes_01_OpaqueHandle.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="Intro_01_SimpleTypes;Intro_02_Classes;SimpleTypes_01_CustomBoolean;SimpleTypes_02_CustomInteger;SimpleTypes_03_SimpleEnum;SimpleTypes_04_DynamicArray;CStyleTypes_01_SimpleEnum;CStyleTypes_02_SparseEnum;CStyleTypes_03_Bitmasks;CStyleTypes_04_SparseBitmasks"/>
+        <CallTarget Targets="Intro_01_SimpleTypes;Intro_02_Classes;SimpleTypes_01_CustomBoolean;SimpleTypes_02_CustomInteger;SimpleTypes_03_SimpleEnum;SimpleTypes_04_DynamicArray;CStyleTypes_01_SimpleEnum;CStyleTypes_02_SparseEnum;CStyleTypes_03_Bitmasks;CStyleTypes_04_SparseBitmasks;CStyleTypes_01_OpaqueHandle"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Intro_01_SimpleTypes:Clean;Intro_02_Classes:Clean;SimpleTypes_01_CustomBoolean:Clean;SimpleTypes_02_CustomInteger:Clean;SimpleTypes_03_SimpleEnum:Clean;SimpleTypes_04_DynamicArray:Clean;CStyleTypes_01_SimpleEnum:Clean;CStyleTypes_02_SparseEnum:Clean;CStyleTypes_03_Bitmasks:Clean;CStyleTypes_04_SparseBitmasks:Clean"/>
+        <CallTarget Targets="Intro_01_SimpleTypes:Clean;Intro_02_Classes:Clean;SimpleTypes_01_CustomBoolean:Clean;SimpleTypes_02_CustomInteger:Clean;SimpleTypes_03_SimpleEnum:Clean;SimpleTypes_04_DynamicArray:Clean;CStyleTypes_01_SimpleEnum:Clean;CStyleTypes_02_SparseEnum:Clean;CStyleTypes_03_Bitmasks:Clean;CStyleTypes_04_SparseBitmasks:Clean;CStyleTypes_01_OpaqueHandle:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Intro_01_SimpleTypes:Make;Intro_02_Classes:Make;SimpleTypes_01_CustomBoolean:Make;SimpleTypes_02_CustomInteger:Make;SimpleTypes_03_SimpleEnum:Make;SimpleTypes_04_DynamicArray:Make;CStyleTypes_01_SimpleEnum:Make;CStyleTypes_02_SparseEnum:Make;CStyleTypes_03_Bitmasks:Make;CStyleTypes_04_SparseBitmasks:Make"/>
+        <CallTarget Targets="Intro_01_SimpleTypes:Make;Intro_02_Classes:Make;SimpleTypes_01_CustomBoolean:Make;SimpleTypes_02_CustomInteger:Make;SimpleTypes_03_SimpleEnum:Make;SimpleTypes_04_DynamicArray:Make;CStyleTypes_01_SimpleEnum:Make;CStyleTypes_02_SparseEnum:Make;CStyleTypes_03_Bitmasks:Make;CStyleTypes_04_SparseBitmasks:Make;CStyleTypes_01_OpaqueHandle:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

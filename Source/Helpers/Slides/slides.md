@@ -556,6 +556,80 @@ if flsAsync in lFlags then
 
 > **Result:** Type-safe, readable, and debuggable bitmasks without the visual noise of `|` and `&`.
 
+
+---
+
+<!-- _class: lead -->
+
+# Section 5: API Wrappers
+## Turning Raw Handles into Objects
+
+**Source:** `Source/Helpers/04 - C API Wrappers`
+
+---
+
+<!-- _class: default -->
+
+# The Problem: Handle Management
+
+C-APIs (like Windows API) use **Opaque Handles** (`THandle`, `HKEY`).
+
+**Issues:**
+1.  **Type Safety:** `HKEY` is just an Integer. You can accidentally pass a `FileHandle` to a `Registry` function.
+2.  **Resource Leaks:** Easy to forget `RegCloseKey`.
+3.  **Verbosity:** `RegQueryValueEx` requires complex buffer logic.
+
+~~~pascal
+// Raw API
+RegOpenKeyEx(HKEY_CURRENT_USER, 'Path', 0, KEY_READ, hKey);
+// ... manage buffers ...
+RegCloseKey(hKey);
+~~~
+
+---
+
+# The Solution: Distinct Types
+
+We define a **Distinct Type** for the handle. This enables specific Helpers and enforces type safety.
+
+~~~pascal
+type
+  // Distinct type! Not compatible with THandle/Cardinal.
+  TRegHandle = type HKEY; 
+
+  TRegHandleHelper = record helper for TRegHandle
+    class function OpenCurrentUser(SubKey: string): TRegHandle; static;
+    function ReadString(Name: string): string;
+    procedure Close;
+  end;
+~~~
+
+---
+
+# Usage: Object-Oriented API
+
+Now we can treat the Handle like an Object.
+
+~~~pascal
+var
+  Key: TRegHandle;
+begin
+  // Factory Method
+  Key := TRegHandle.OpenCurrentUser('Control Panel\International');
+  
+  if Key.IsValid then
+  try
+    // Fluent Method
+    Writeln(Key.ReadString('sCountry'));
+  finally
+    // Encapsulated Cleanup
+    Key.Close; 
+  end;
+end;
+~~~
+
+> **Result:** Safe, clean code with **Zero Runtime Overhead** (methods are inlined).
+
 ---
 
 <!-- _class: lead -->
