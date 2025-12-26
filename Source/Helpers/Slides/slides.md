@@ -8,18 +8,14 @@ style: |
   section { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
   code { font-family: 'Consolas', 'Courier New', monospace; background: #f0f0f0; padding: 2px 5px; border-radius: 4px; }
   pre { background: #1e1e1e; color: #d4d4d4; font-size: 18px; }
-
-  /* Make Notes smaller and distinct */
   blockquote { font-size: 75%; color: #666; border-left: 4px solid #2b5797; background: #f9f9f9; padding: 10px; }
-  h1 { color: #2b5797; }
-  h2 { color: #20406b; }
-  strong { color: #b91d47; }
-
-  /* Warning Slide Style */
   section.warning h1 { color: #d9534f; }
   section.warning strong { color: #d9534f; }
   section.warning blockquote { border-left-color: #d9534f; background: #fff0f0; color: #a94442; }
-  ---
+  h1 { color: #2b5797; }
+  h2 { color: #20406b; }
+  strong { color: #b91d47; }
+---
 
 # Modernizing Pascal
 ## Readability, Safety, and Sustainability with Helpers
@@ -158,6 +154,14 @@ lMainList
 ### Get the Code
 Clone the repository to try the demos:
 `github.com/tregubovav-dev/Delphi-Playground`
+
+---
+
+<!-- _class: lead -->
+
+# Thank You!
+
+**License:** MIT (Educational Use)
 
 ---
 
@@ -498,22 +502,37 @@ We need to convert this safely to a 32-bit Integer.
 
 ---
 
-# The Helper: Safe Casting
+# The Helper: Safe Casting (1/2)
 
-Direct casting (`Integer(MySet)`) is dangerous because Sets can be 1, 2, or 4 bytes. The Helper handles this safely.
+Direct casting (`Integer(MySet)`) is dangerous because Pascal Sets vary in size (1, 2, or 4 bytes) depending on the number of elements.
+
+Reading 4 bytes from a 2-byte set reads stack garbage!
+
+**The Strategy:**
+1.  Detect `SizeOf(Set)` at compile time.
+2.  Use a Pointer Cast (`PWord`, `PByte`) to read exactly the right amount of memory.
+3.  Mask unused bits to ensure a clean integer result.
+
+---
+
+# The Helper: Safe Casting (2/2)
+
+**Implementation:**
 
 ~~~pascal
 class function ToInteger(Value: TSimpleFlags): Integer;
 begin
-  // 1. Detect Size of Set
-  // 2. Load correct number of bytes (1, 2, or 4)
-  // 3. Mask unused bits
   {$IF SizeOf(TSimpleFlags) = 1}
     Result := PByte(@Value)^;
-  {$ELSEIF ...}
+  {$ELSEIF SizeOf(TSimpleFlags) = 2}
     Result := PWord(@Value)^;
+  {$ELSEIF SizeOf(TSimpleFlags) = 4}
+    Result := PCardinal(@Value)^;
+  {$ELSE}
+    // Error or Safe Move
   {$IFEND}
   
+  // Sanitize high bits
   Result := Result and cMask;
 end;
 ~~~
@@ -556,6 +575,70 @@ if flsAsync in lFlags then
 
 > **Result:** Type-safe, readable, and debuggable bitmasks without the visual noise of `|` and `&`.
 
+---
+
+# Advanced: Sparse Bitmasks (`TNcFlags`)
+
+Sometimes C-Bitmasks have "holes" (reserved bits).
+
+~~~c
+#define FLAG_A 0x02  (Bit 1)
+// Bits 2..15 Reserved
+#define FLAG_B 0x10000 (Bit 16)
+~~~
+
+**The Solution:**
+Use **Explicit Ordinals** in the Pascal Enum to match the bit positions.
+
+~~~pascal
+type
+  TNcFlag = (
+    ncflA = 1,  // Maps to Bit 1 (1 shl 1)
+    ncflB = 16  // Maps to Bit 16 (1 shl 16)
+  );
+  TNcFlags = set of TNcFlag;
+~~~
+
+> The Helper's `cMask` ensures we never write to the reserved "hole" bits.
+
+---
+
+<!-- _class: warning -->
+
+# ⚠️ The "Explicit Cast" Risk (1/2)
+
+Helpers provide safe methods, but they **cannot** prevent standard Pascal type casting.
+
+**The Danger:**
+An explicit cast (`TType(Int)`) completely bypasses the Helper:
+
+1.  **Validation Skipped:** Range checks and Bitmasks are ignored.
+2.  **Mapping Broken:** For Sparse Enums, `Ord(Enum)` (the Index) is rarely the same as the C-Value.
+
+> Using `TType(Val)` assumes a direct 1:1 mapping, which is false for complex types.
+
+---
+
+<!-- _class: warning -->
+
+# ⚠️ The "Explicit Cast" Risk (2/2)
+
+**Broken Mapping (Sparse Enum):**
+~~~pascal
+// BAD: Pascal Index 5 is NOT C-Value 1024
+Status := TLegacyStatus(5); 
+// Result: Code expecting Index 5 works, but C-API gets garbage.
+~~~
+
+**Broken Validation (Sparse Mask):**
+~~~pascal
+// BAD: Bit 10 is in the "Hole"
+Flag := TNcFlag(10); 
+// Result: Valid Pascal Set, but data is stripped by cMask later.
+~~~
+
+**The Rule:**
+> **Never** use hard casts on mapped types. Always use `FromInteger`.
 
 ---
 
