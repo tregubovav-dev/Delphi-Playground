@@ -43,14 +43,11 @@ end;
 
 procedure Example2;
 var
-  lCtx: PSomeCtx;
   lFlags: TNcFlags;
   lRaw: Integer;
 begin
   Writeln(sLineBreak+'--- Example #2: Safe Parsing ---');
   Writeln('Objective: Parse C-Integer while ignoring garbage in the "Hole".');
-
-  lCtx:=nil;
 
   // 1. Simulate C returning a value with garbage
   // 0x400002 (Valid)+0x100 (Bit 8 - Invalid Hole)

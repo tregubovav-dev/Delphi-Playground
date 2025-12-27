@@ -14,6 +14,9 @@ program CStyleTypes_01_OpaqueHandle;
 
 uses
   System.SysUtils,
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows,
+  {$ENDIF}
   Playground.Utils in '..\..\Common\Playground.Utils.pas',
   Playground.CStyleTypes in 'Playground.CStyleTypes.pas';
 

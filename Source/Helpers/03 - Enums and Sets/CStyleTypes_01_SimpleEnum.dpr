@@ -45,6 +45,7 @@ begin
   Writeln(sLineBreak+'--- Example #2: Receiving from C-API ---');
   Writeln('Objective: Safely convert raw int from C-API to Pascal Enum.');
 
+  lCtx:=nil;
   // Mocking return value
   lRawVal:=SOME_CTX_get_simple_enum(lCtx);
 

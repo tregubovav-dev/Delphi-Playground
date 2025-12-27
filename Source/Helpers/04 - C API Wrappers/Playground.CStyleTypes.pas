@@ -36,21 +36,25 @@ type
   public
     /// <summary>Opens a subkey under the hive in Root parameter (Read Only).</summary>
     class function Open(Root: HKEY; const SubKey: string): TRegHandle; static;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>Opens a subkey under HKEY_LOCAL_MACHINE (Read Only).</summary>
     class function OpenLocalMachine(const SubKey: string): TRegHandle; static;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>Opens a subkey under HKEY_CURRENT_USER (Read Only).</summary>
     class function OpenCurrentUser(const SubKey: string): TRegHandle; static;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>Reads a string value. Returns Default if not found or empty.</summary>
     function ReadString(const Name: string; const Default: string = ''): string;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>Closes the registry key.</summary>
-    procedure Close;
+    procedure Close; {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>Checks if handle is non-zero.</summary>
-    function IsValid: Boolean; inline;
+    function IsValid: Boolean; {$IFNDEF DEBUG}inline;{$ENDIF}
   end;
 {$ENDIF}
 
