@@ -2,6 +2,11 @@
 
 This directory contains code examples accompanying the presentation **"Modernizing Pascal: Readability, Safety, and Sustainability with Helpers"**.
 
+## Presentation
+
+*  **[Presentation slides](Slides/slides.md)**
+*  **[Presentation memo](Slides/Memo.md)**
+
 These demos illustrate how to transition from traditional global utility functions to modern, object-oriented Helper patterns in Delphi.
 
 ## Directory Structure
