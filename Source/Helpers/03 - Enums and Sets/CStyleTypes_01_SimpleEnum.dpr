@@ -14,6 +14,7 @@ program CStyleTypes_01_SimpleEnum;
 
 uses
   System.SysUtils,
+  System.SysConst,
   System.TypInfo,
   Playground.Utils in '..\..\Common\Playground.Utils.pas',
   Playground.CStyleTypes in 'Playground.CStyleTypes.pas';
