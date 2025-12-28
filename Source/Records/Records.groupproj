@@ -1,0 +1,36 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{2549D25C-2A82-4ED9-BCD7-669C7125DC24}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="01 - Operand Overloads\Overloads_01_Basics.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="Overloads_01_Basics">
+        <MSBuild Projects="01 - Operand Overloads\Overloads_01_Basics.dproj"/>
+    </Target>
+    <Target Name="Overloads_01_Basics:Clean">
+        <MSBuild Projects="01 - Operand Overloads\Overloads_01_Basics.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Overloads_01_Basics:Make">
+        <MSBuild Projects="01 - Operand Overloads\Overloads_01_Basics.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="Overloads_01_Basics"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="Overloads_01_Basics:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="Overloads_01_Basics:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
