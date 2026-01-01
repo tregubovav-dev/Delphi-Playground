@@ -6,6 +6,12 @@
         <Projects Include="01 - Operand Overloads\Overloads_01_Basics.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="02 - Safe Set\Records_02_SafeSet.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="03 - Atomic Wrapper\Records_03_AtomicInt.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -23,14 +29,32 @@
     <Target Name="Overloads_01_Basics:Make">
         <MSBuild Projects="01 - Operand Overloads\Overloads_01_Basics.dproj" Targets="Make"/>
     </Target>
+    <Target Name="Records_02_SafeSet">
+        <MSBuild Projects="02 - Safe Set\Records_02_SafeSet.dproj"/>
+    </Target>
+    <Target Name="Records_02_SafeSet:Clean">
+        <MSBuild Projects="02 - Safe Set\Records_02_SafeSet.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Records_02_SafeSet:Make">
+        <MSBuild Projects="02 - Safe Set\Records_02_SafeSet.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Records_03_AtomicInt">
+        <MSBuild Projects="03 - Atomic Wrapper\Records_03_AtomicInt.dproj"/>
+    </Target>
+    <Target Name="Records_03_AtomicInt:Clean">
+        <MSBuild Projects="03 - Atomic Wrapper\Records_03_AtomicInt.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Records_03_AtomicInt:Make">
+        <MSBuild Projects="03 - Atomic Wrapper\Records_03_AtomicInt.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="Overloads_01_Basics"/>
+        <CallTarget Targets="Overloads_01_Basics;Records_02_SafeSet;Records_03_AtomicInt"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Overloads_01_Basics:Clean"/>
+        <CallTarget Targets="Overloads_01_Basics:Clean;Records_02_SafeSet:Clean;Records_03_AtomicInt:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Overloads_01_Basics:Make"/>
+        <CallTarget Targets="Overloads_01_Basics:Make;Records_02_SafeSet:Make;Records_03_AtomicInt:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
