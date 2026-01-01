@@ -264,3 +264,158 @@ In the previous section, we used **Helpers** to patch native sets for C-Interop.
 ## `Records_02_SafeSet`
 
 Creating, Modifying, and Interoperating with Native Sets.
+
+---
+
+<!-- _class: lead -->
+
+# Atomic Wrappers
+## Encapsulating Thread Safety
+
+**Source:** `Source/Records` (AtomicInt Demo)
+
+---
+
+# Why not just use Helpers?
+
+We previously used Helpers for Atomic Sets. Why build a Record Wrapper (`TAtomicInt`) for Integers?
+
+**1. Implicit Casting**
+Helpers cannot overload operators. Wrappers can.
+*   `TAtomicInt` behaves like an Integer in expressions.
+
+**2. Atomic Assignment**
+Helpers cannot override `:=`.
+*   **Helper:** `Val.AsAtomic := 10;` (Property trick).
+*   **Wrapper:** `Val := 10;` (Natural syntax triggers `AtomicExchange`).
+
+---
+
+# The "Volatile" Advantage
+
+Multithreading bugs often happen because the compiler optimizes reads (caching a variable in a CPU register).
+
+**The Raw Integer Risk:**
+~~~pascal
+var Flag: Integer; // Compiler might optimize this!
+...
+while Flag = 0 do; // Infinite loop if cached
+~~~
+
+**The Wrapper Solution:**
+~~~pascal
+type
+  TAtomicInt = record
+  strict private
+    [Volatile] FData: Integer; // Compiler forced to read memory
+  end;
+~~~
+> **Benefit:** The safety is baked into the type. You cannot "forget" to mark the variable as volatile.
+
+---
+
+# The API Difference
+
+**Standard TInterlocked:**
+~~~pascal
+// Verbose, repeats variable name, hard to read
+TInterlocked.CompareExchange(MyVar, NewVal, OldVal);
+TInterlocked.Increment(MyVar);
+~~~
+
+**TAtomicInt Wrapper:**
+~~~pascal
+// Object-Oriented, Clean, Discoverable
+MyAtom.CompareExchange(NewVal, OldVal);
+MyAtom.Increment;
+~~~
+
+---
+
+# Atomic Assignment Details
+
+We overload `Assign` to ensure thread safety during copies.
+
+~~~pascal
+class operator Assign(var Dest: TAtomicInt; const [ref] Src: TAtomicInt);
+begin
+  
+  // Ensures 'Dest' update is immediately visible to all threads
+  Dest.Exchange(Src.GetValue); // It wraps TInterlocked.Exchange (Full Memory Barrier)
+end;
+~~~
+
+*   **Standard `:=`**: Simple memory copy (might be reordered by CPU).
+*   **Atomic `:=`**: Guaranteed `LOCK` prefix (Hardware Fence).
+
+
+---
+
+# Enhancing TAtomicInt
+
+We can make the wrapper behave even more like a native type by overloading comparison operators.
+
+~~~pascal
+// Allow direct comparison in "if" statements
+class operator LessThan(const A: TAtomicInt; const B: Integer): Boolean;
+class operator GreaterThan(const A: TAtomicInt; const B: Integer): Boolean;
+~~~
+
+**Usage:**
+~~~pascal
+if MyAtomic > 0 then ... 
+// effectively: if MyAtomic.Value > 0 then ...
+~~~
+
+---
+
+# The Ultimate Test: Multithreading
+
+We built a stress test (`Records_04_Multithreading`) to simulate high contention.
+
+*   **Setup:** 8 Writers fighting to decrement a counter from `33,554,430` to `0`.
+*   **The Switch:** `{$DEFINE USE_PLAIN_INTEGER}` vs `TAtomicInt`.
+
+---
+
+# Result 1: The "Plain Integer" Disaster
+
+Without atomics, threads overwrite each other's work (Read-Modify-Write race). The counter overshoots zero and spirals out of control.
+
+~~~text
+  [Status] Timeout. Terminating threads...
+  
+  [Writer 0] ... reached ZERO in 1,276 ms
+  [Writer 1] ... can not reach ZERO in 11,007 ms
+  
+  [Final Counter State] -357,719,688 (Expected = 0)
+~~~
+
+> **Verdict:** Catastrophic Logic Failure. The counter missed 0 by **350 million**.
+
+---
+
+# Result 2: The "Atomic" Success
+
+With `TAtomicInt`, the **CAS Loop** handles the contention. Threads spin until they successfully decrement.
+
+~~~text
+  [Result] Success. All threads finished.
+  
+  [Writer 0] ... reached ZERO in 4,427 ms
+  [Writer 7] ... reached ZERO in 4,460 ms
+  
+  [Total Writers' Iterations] 85,731,220
+  [Final Counter State]       0 (Expected = 0)
+~~~
+
+> **Verdict:** Perfect Data Integrity.
+> Note: **85M attempts** were required to perform **33M decrements**. The wrapper handled ~52 million collisions transparently!
+---
+
+<!-- _class: lead -->
+
+# Demo Time
+## `Records_03_AtomicInt`
+
+Atomic Arithmetic, CAS, and Assignment.
