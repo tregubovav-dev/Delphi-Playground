@@ -17,19 +17,19 @@ begin
   Writeln('--- Example #1: Atomic Arithmetic ---');
 
   // 1. Initialization
-  lAtom := 10;
-  Writeln(sLineBreak + '  [Code] lAtom := 10;');
-  Writeln('  [Result] Value: ' + lAtom.Value.ToString);
+  lAtom:=10;
+  Writeln(sLineBreak+'  [Code] lAtom:=10;');
+  Writeln('  [Result] Value: '+lAtom.Value.ToString);
 
   // 2. Increment (Default Parameter)
-  Writeln(sLineBreak + '  [Code] lAtom.Increment; // Default +1');
+  Writeln(sLineBreak+'  [Code] lAtom.Increment; // Default +1');
   lAtom.Increment;
-  Writeln('  [Result] Value: ' + lAtom.Value.ToString);
+  Writeln('  [Result] Value: '+lAtom.Value.ToString);
 
   // 3. Increment by Amount
-  Writeln(sLineBreak + '  [Code] lAtom.Increment(5);');
+  Writeln(sLineBreak+'  [Code] lAtom.Increment(5);');
   lAtom.Increment(5);
-  Writeln('  [Result] Value: ' + lAtom.Value.ToString);
+  Writeln('  [Result] Value: '+lAtom.Value.ToString);
 end;
 
 procedure Example2_CAS;
@@ -38,23 +38,23 @@ var
   lSuccess: Boolean;
   lPrev: Integer;
 begin
-  Writeln(sLineBreak + '--- Example #2: Compare & Exchange ---');
+  Writeln(sLineBreak+'--- Example #2: Compare & Exchange ---');
 
-  lAtom := 100;
-  Writeln('  [Initial] ' + lAtom.Value.ToString);
+  lAtom:=100;
+  Writeln('  [Initial] '+lAtom.Value.ToString);
 
   // 1. Boolean Overload (Simple Check)
   // Fail case: Expected 50, Actual 100
-  Writeln(sLineBreak + '  [Code] if CompareExchange(New=200, Expected=50) ...');
+  Writeln(sLineBreak+'  [Code] if CompareExchange(New=200, Expected=50) ...');
   if lAtom.CompareExchange(200, 50) then
     Writeln('  [Result] Swapped! (Unexpected)')
   else
-    Writeln('  [Result] Failed. Value is still ' + lAtom.Value.ToString);
+    Writeln('  [Result] Failed. Value is still '+lAtom.Value.ToString);
 
-  // 2. Detailed Overload (Out Success + Old Value)
+  // 2. Detailed Overload (Out Success+Old Value)
   // Success case: Expected 100, Actual 100
-  Writeln(sLineBreak + '  [Code] lPrev := CompareExchange(200, 100, lSuccess);');
-  lPrev := lAtom.CompareExchange(200, 100, lSuccess);
+  Writeln(sLineBreak+'  [Code] lPrev:=CompareExchange(200, 100, lSuccess);');
+  lPrev:=lAtom.CompareExchange(200, 100, lSuccess);
 
   if lSuccess then
     Writeln(Format('  [Result] Swapped! Old: %d, New: %d', [lPrev, lAtom.Value]))
@@ -66,14 +66,14 @@ procedure Example3_Assignment;
 var
   lAtom1, lAtom2: TAtomicInt;
 begin
-  Writeln(sLineBreak + '--- Example #3: Atomic Assignment ---');
+  Writeln(sLineBreak+'--- Example #3: Atomic Assignment ---');
 
-  lAtom1 := 50;
-  lAtom2 := 100;
+  lAtom1:=50;
+  lAtom2:=100;
 
   // Operator Assign (Triggers TAtomicInt.Assign -> Exchange)
-  Writeln('  [Code] lAtom1 := lAtom2; // Atomic Copy');
-  lAtom1 := lAtom2;
+  Writeln('  [Code] lAtom1:=lAtom2; // Atomic Copy');
+  lAtom1:=lAtom2;
 
   Writeln(Format('  [Result] Atom1: %d, Atom2: %d', [lAtom1.Value, lAtom2.Value]));
 end;
@@ -90,7 +90,7 @@ var
   lRunner: TRunner;
   
 begin
-  Writeln(sLineBreak + '--- Example #4: Multithreaded Countdown ---');
+  Writeln(sLineBreak+'--- Example #4: Multithreaded Countdown ---');
   
   lRunner:=TRunner.Create(cCountDownVal, cWriterCount, cReaderCount);
   try

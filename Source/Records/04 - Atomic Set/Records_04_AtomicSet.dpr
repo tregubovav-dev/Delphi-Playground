@@ -21,23 +21,23 @@ begin
   Writeln('Objective: Demonstrate Pascal-like syntax on the atomic wrapper.');
 
   // 1. Implicit Assignment
-  lSet := [afRunning, afCanceling];
-  Writeln(sLineBreak + '  [Code] lSet := [afRunning, afCanceling];');
+  lSet:=[afRunning, afCanceling];
+  Writeln(sLineBreak+'  [Code] lSet:=[afRunning, afCanceling];');
 
   // Use AsInteger for Hex Output
-  Writeln(Format('  [Result] As Hex: $%x', [lSet.AsInteger]));
+  Writeln(Format('  [Result]: %s', [lSet.Value.AsString]));
 
   // 2. Set Arithmetic (+)
-  Writeln(sLineBreak + '  [Code] lSet := lSet + afFailing;');
-  lSet := lSet + afFailing;
+  Writeln(sLineBreak+'  [Code] lSet:=lSet+afFailing;');
+  lSet:=lSet+afFailing;
 
   // 3. "In" Operator with clean ToString
   Writeln('  [Result] Is afFailed in Set? ' +
     (afFailing in lSet).ToString(TUseBoolStrs.True));
 
   // 4. Subtract (-)
-  Writeln(sLineBreak + '  [Code] lSet := lSet - [afRunning];');
-  lSet := lSet - [afRunning];
+  Writeln(sLineBreak+'  [Code] lSet:=lSet-[afRunning];');
+  lSet:=lSet-[afRunning];
 
   Writeln('  [Result] Is afRunning in Set? ' +
     (afRunning in lSet).ToString(TUseBoolStrs.True));
@@ -50,25 +50,26 @@ procedure Example2;
 var
   lSet: TAtomicSet;
 begin
-  Writeln(sLineBreak + '--- Example #2: Atomic Operations ---');
+  Writeln(sLineBreak+'--- Example #2: Atomic Operations ---');
   Writeln('Objective: Thread-safe modifications.');
 
-  lSet := [];
+  lSet:=[];
 
   // 1. Atomic Include
-  Writeln(sLineBreak + '  [Code] AtomicInclude(afRunning)');
+  Writeln(sLineBreak+'  [Code] AtomicInclude(afRunning)');
   lSet.AtomicInclude(afRunning);
 
   if afRunning in lSet then
-    Writeln('  [Result] afRunning set. Value: $' +
-      lSet.AsInteger.ToHexString(4));
+    Writeln(Format('  [Result] afRunning set. Value: %s', [lSet.Value.AsString]));
 
   // 2. Atomic Transition (CAS)
   Writeln(sLineBreak +
     '  [Code] AtomicTransition([afRunning], [afRunning, afCanceling])');
   // Logic: If set contains ONLY afRunning, add afCanceling.
   if lSet.AtomicTransition([afRunning], [afRunning, afCanceling]) then
-    Writeln('  [Result] Success. Transitioned.')
+    Writeln(
+      Format('  [Result] Success. Transitioned. Value: %s',[lSet.Value.AsString])
+    )
   else
     Writeln('  [Result] Failed.');
 
@@ -94,9 +95,9 @@ type
 constructor TFlagSetter.Create(ATarget: PAtomicSet; AFlag: TAtomicFlag);
 begin
   inherited Create(True);
-  FTarget := ATarget;
-  FFlag := AFlag;
-  FreeOnTerminate := False;
+  FTarget:=ATarget;
+  FFlag:=AFlag;
+  FreeOnTerminate:=False;
 end;
 
 procedure TFlagSetter.Execute;
@@ -114,18 +115,18 @@ var
   lEnum: TAtomicFlag;
   lMissing: Boolean;
 begin
-  Writeln(sLineBreak + '--- Example #3: Multithreaded Flag Race ---');
+  Writeln(sLineBreak+'--- Example #3: Multithreaded Flag Race ---');
   Writeln(
     Format('Objective: %d Threads set %0:d different flags simultaneously.',
       [Succ(Ord(High(TAtomicFlag)))])
   );
 
-  lSharedSet := [];
-  lThreads := TObjectList<TFlagSetter>.Create;
+  lSharedSet:=[];
+  lThreads:=TObjectList<TFlagSetter>.Create;
 
   try
     // Create 7 threads, each assigned one unique flag (afQueued..afPausing)
-    for lEnum := Low(TAtomicFlag) to High(TAtomicFlag) do
+    for lEnum:=Low(TAtomicFlag) to High(TAtomicFlag) do
     begin
       lThreads.Add(TFlagSetter.Create(@lSharedSet, lEnum));
     end;
@@ -139,20 +140,23 @@ begin
     for var t in lThreads do t.WaitFor;
 
     // Verify
-    Writeln(sLineBreak + '  [Verification]');
-    lMissing := False;
+    Writeln(sLineBreak+'  [Verification]');
+    lMissing:=False;
 
-    for lEnum := Low(TAtomicFlag) to High(TAtomicFlag) do
+    for lEnum:=Low(TAtomicFlag) to High(TAtomicFlag) do
     begin
       if not (lEnum in lSharedSet) then
       begin
         Writeln(Format('  [Error] Flag %d is MISSING!', [Ord(lEnum)]));
-        lMissing := True;
+        lMissing:=True;
       end;
     end;
 
     if not lMissing then
-      Writeln(Format('  [Success] All flags present. Result: $%x', [lSharedSet.AsInteger]))
+      Writeln(
+        Format('  [Success] All flags present. Result: %s',
+          [lSharedSet.Value.AsString])
+      )
     else
       Writeln('  [Fail] Race condition detected.');
 
