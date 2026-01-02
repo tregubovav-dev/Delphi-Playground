@@ -499,4 +499,4 @@ if SharedFlags.AtomicTransition([afQueued], [afRunning]) then
 **Result:**
 *   **Without Atomics:** Race conditions cause bits to be overwritten/lost. Result is random.
 *   **With `AtomicInclude`:** The CAS Loop retries on contention.
-*   **Final State:** `0x7F` (All 7 bits set). Zero data loss.
+*   **Final State:** `$7F` (All 7 bits set). Zero data loss.
