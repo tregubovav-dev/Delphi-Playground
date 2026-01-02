@@ -488,15 +488,29 @@ if SharedFlags.AtomicTransition([afQueued], [afRunning]) then
 
 ---
 
-# Demo: The Flag Race
+<!-- _class: lead -->
 
-**Demo:** `Records_05_AtomicSet`
+# Demo Time
+## `Records_05_AtomicSet`
+
+Atomic Bitmask update, CAS, and Assignment.
+
+---
+
+# Demo: The Flag Race
 
 **Scenario:**
 *   **7 Threads** running simultaneously.
 *   Each thread tries to set a **Unique Flag** in a shared set.
 
 **Result:**
-*   **Without Atomics:** Race conditions cause bits to be overwritten/lost. Result is random.
+*   **Without Atomics:** Race conditions cause bits to be overwritten/lost.
 *   **With `AtomicInclude`:** The CAS Loop retries on contention.
-*   **Final State:** `$7F` (All 7 bits set). Zero data loss.
+
+~~~text
+  [Setup] Created 7 threads.
+  [Verification]
+  [Success] All flags present. Result: [afQueued ,afRunning ,afCompleted ,afReset ,afFailing ,afCanceling ,afPausing]
+~~~
+
+> **Verdict:** Perfect Data Integrity. Zero bits lost.
