@@ -20,22 +20,31 @@ type
   strict private
     FValue: double;
     class function AreEqual(const A: TDoubleRec; const B: string): Boolean; static;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
   public
     constructor Create(AValue: double);
 
 //    class operator Assign(var Dest: TDoubleRec; const [ref] Src: TDoubleRec);
 
     class operator Implicit(const AValue: string): TDoubleRec;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator Implicit(const AValue: TDoubleRec): string;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     class operator Explicit(const AValue: string): TDoubleRec;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator Explicit(const AValue: TDoubleRec): string;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     class operator Equal(const A: TDoubleRec; const B: string): Boolean; overload;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator Equal(const A: string; const B: TDoubleRec): Boolean; overload;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     class operator NotEqual(const A: TDoubleRec; const B: string): Boolean; overload;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator NotEqual(const A: string; const B: TDoubleRec): Boolean; overload;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     property Value: double read FValue;
   end;

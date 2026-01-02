@@ -65,45 +65,63 @@ type
     // Used to calculate actual valid bits based on Enum Range, not Storage Size
     const cMask = TStorage(Pred(1 shl Succ(Ord(High(TAtomicFlag)))));
 
-    class function ToStorage(Value: TAtomicFlags): TStorage; static; inline;
-    class function FromStorage(Value: TStorage): TAtomicFlags; static; inline;
+    class function ToStorage(Value: TAtomicFlags): TStorage; static;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
+    class function FromStorage(Value: TStorage): TAtomicFlags; static;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     class function DoCAS(var ATarget: TStorage; New, Old: TStorage;
-      out Success: Boolean): TStorage; static; inline;
+      out Success: Boolean): TStorage; static;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
-    procedure SetAsAtomic(Value: TAtomicFlags);
-    function GetAsAtomic: TAtomicFlags;
+    procedure SetAsAtomic(Value: TAtomicFlags); {$IFNDEF DEBUG}inline;{$ENDIF}
+    function GetAsAtomic: TAtomicFlags; {$IFNDEF DEBUG}inline;{$ENDIF}
 
-    procedure SetAsInteger(Value: TStorage);
+    procedure SetAsInteger(Value: TStorage); {$IFNDEF DEBUG}inline;{$ENDIF}
 
   public
     // -------------------------------------------------------------------------
     // Atomic Operations
     // -------------------------------------------------------------------------
     function AtomicInclude(Value: TAtomicFlags): TAtomicFlags; overload;
-    function AtomicInclude(Value: TAtomicFlag): TAtomicFlags; overload; inline;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
+    function AtomicInclude(Value: TAtomicFlag): TAtomicFlags; overload;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     function AtomicExclude(Value: TAtomicFlags): TAtomicFlags; overload;
-    function AtomicExclude(Value: TAtomicFlag): TAtomicFlags; overload; inline;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
+    function AtomicExclude(Value: TAtomicFlag): TAtomicFlags; overload;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     function AtomicTransition(Expected, NewValue: TAtomicFlags): Boolean;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     // -------------------------------------------------------------------------
     // Operators
     // -------------------------------------------------------------------------
     class operator Implicit(Value: TAtomicFlags): TAtomicSet;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator Implicit(Value: TAtomicSet): TAtomicFlags;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator Implicit(Value: TAtomicFlag): TAtomicSet;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     class operator Add(Left: TAtomicSet; Right: TAtomicFlags): TAtomicSet;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator Add(Left: TAtomicSet; Right: TAtomicFlag): TAtomicSet;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     class operator Subtract(Left: TAtomicSet; Right: TAtomicFlags): TAtomicSet;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator Subtract(Left: TAtomicSet; Right: TAtomicFlag): TAtomicSet;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     class operator In(Element: TAtomicFlag; SetVal: TAtomicSet): Boolean;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator Equal(Left, Right: TAtomicSet): Boolean;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator NotEqual(Left, Right: TAtomicSet): Boolean;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     // -------------------------------------------------------------------------
     // Properties

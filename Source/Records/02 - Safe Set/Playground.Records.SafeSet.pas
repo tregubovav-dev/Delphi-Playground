@@ -46,39 +46,57 @@ type
   private
     FData: TStorage;
     // Centralized Conversion Logic
-    class function ToStorage(Value: TMyFlags): TStorage; static; inline;
+    class function ToStorage(Value: TMyFlags): TStorage; static;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class function FromInteger(Value: TStorage): TStorage; static;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     procedure SetAsInteger(Value: TStorage);
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     class function OpInclude(AData: TStorage; Value: TMyFlag): TStorage;
-      static; inline;
+      static; {$IFNDEF DEBUG}inline;{$ENDIF}
     class function OpExclude(AData: TStorage; Value: TMyFlag): TStorage;
-      static; inline;
+      static; {$IFNDEF DEBUG}inline;{$ENDIF}
+
   public
     // Converters
     class operator Implicit(Value: TMyFlags): TMySafeSet;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator Implicit(Value: TMySafeSet): TMyFlags;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator Implicit(Value: TMyFlag): TMySafeSet;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     // Arithmetic (Flag)
     class operator Add(ALeft: TMySafeSet; ARight: TMyFlag): TMySafeSet;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator Subtract(ALeft: TMySafeSet; ARight: TMyFlag): TMySafeSet;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     // Arithmetic (Native Set)
     class operator Add(ALeft: TMySafeSet; ARight: TMyFlags): TMySafeSet;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator Subtract(ALeft: TMySafeSet; ARight: TMyFlags): TMySafeSet;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     // Arithmetic (Safe Set)
     class operator Add(ALeft, ARight: TMySafeSet): TMySafeSet;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator Subtract(ALeft, ARight: TMySafeSet): TMySafeSet;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     class operator In(AElement: TMyFlag; ASet: TMySafeSet): Boolean;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator Equal(ALeft, ARight: TMySafeSet): Boolean;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator NotEqual(ALeft, ARight: TMySafeSet): Boolean;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     // Fluent Methods (Pascal-style)
     procedure Include(Value: TMyFlag);
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     procedure Exclude(Value: TMyFlag);
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     property AsInteger: TStorage read FData write SetAsInteger;
   end;

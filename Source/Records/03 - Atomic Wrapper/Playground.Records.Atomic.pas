@@ -21,7 +21,9 @@ type
     [Volatile]
     FData: integer;
     function GetValue: integer; inline;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     procedure SetValue(const Value: integer); inline;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
   public
     // -------------------------------------------------------------------------
     // Atomic Modification
@@ -29,35 +31,51 @@ type
 
     /// <summary>Atomic Add (Self+Amount). Returns NEW value.</summary>
     function Add(Amount: integer): integer;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>Atomic Increment by Amount. Returns NEW value.</summary>
     function Increment(Amount: integer =1 ): integer; overload; inline;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>Atomic Decrement by Amount. Returns NEW value.</summary>
     function Decrement(Amount: integer = 1): integer; overload; inline;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>Atomic Exchange. Sets new value, returns OLD value.</summary>
     function Exchange(NewValue: integer): integer;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>Compare and Exchange. Returns True if swap occurred.</summary>
     function CompareExchange(NewValue, Expected: integer): boolean; overload;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>Compare and Exchange. Returns OLD value.</summary>
     function CompareExchange(NewValue, Expected: integer;
       out Success: boolean): integer; overload;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     // -------------------------------------------------------------------------
     // Operator Overloads
     // -------------------------------------------------------------------------
     class operator Assign(var Dest: TAtomicInt; const [ref] Src: TAtomicInt);
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator Implicit(const A: TAtomicInt): integer;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator Implicit(const A: integer): TAtomicInt;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator Equal(const A: TAtomicInt; const B: integer): Boolean;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator NotEqual(const A: TAtomicInt; const B: integer): Boolean;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator GreaterThan(const A: TAtomicInt; const B: integer): boolean;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator GreaterThanOrEqual(const A: TAtomicInt; const B: integer): boolean;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator LessThan(const A: TAtomicInt; const B: integer): boolean;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
     class operator LessThanOrEqual(const A: TAtomicInt; const B: integer): boolean;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
+
     property Value: integer read GetValue write SetValue;
   end;
 

@@ -41,16 +41,17 @@ type
     destructor Destroy; override;
 
     /// <summary>Signals threads to begin execution.</summary>
-    procedure SetStartEvent;
+    procedure SetStartEvent; {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>Signals that a thread has finished its work.</summary>
-    procedure SetStopped;
+    procedure SetStopped; {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>Waits for the Start signal.</summary>
-    function WaitForStart: boolean;
+    function WaitForStart: boolean; {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>Waits for all threads to signal Stop (or timeout).</summary>
     function WaitForStop(ATimeout: cardinal): boolean;
+      {$IFNDEF DEBUG}inline;{$ENDIF}
 
     /// <summary>
     ///   Access to the shared atomic integer.
