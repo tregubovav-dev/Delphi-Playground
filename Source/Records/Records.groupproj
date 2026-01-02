@@ -12,6 +12,9 @@
         <Projects Include="03 - Atomic Wrapper\Records_03_AtomicInt.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="04 - Atomic Set\Records_04_AtomicSet.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -47,14 +50,23 @@
     <Target Name="Records_03_AtomicInt:Make">
         <MSBuild Projects="03 - Atomic Wrapper\Records_03_AtomicInt.dproj" Targets="Make"/>
     </Target>
+    <Target Name="Records_04_AtomicSet">
+        <MSBuild Projects="04 - Atomic Set\Records_04_AtomicSet.dproj"/>
+    </Target>
+    <Target Name="Records_04_AtomicSet:Clean">
+        <MSBuild Projects="04 - Atomic Set\Records_04_AtomicSet.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Records_04_AtomicSet:Make">
+        <MSBuild Projects="04 - Atomic Set\Records_04_AtomicSet.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="Overloads_01_Basics;Records_02_SafeSet;Records_03_AtomicInt"/>
+        <CallTarget Targets="Overloads_01_Basics;Records_02_SafeSet;Records_03_AtomicInt;Records_04_AtomicSet"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Overloads_01_Basics:Clean;Records_02_SafeSet:Clean;Records_03_AtomicInt:Clean"/>
+        <CallTarget Targets="Overloads_01_Basics:Clean;Records_02_SafeSet:Clean;Records_03_AtomicInt:Clean;Records_04_AtomicSet:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Overloads_01_Basics:Make;Records_02_SafeSet:Make;Records_03_AtomicInt:Make"/>
+        <CallTarget Targets="Overloads_01_Basics:Make;Records_02_SafeSet:Make;Records_03_AtomicInt:Make;Records_04_AtomicSet:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
