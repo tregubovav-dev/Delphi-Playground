@@ -419,3 +419,84 @@ With `TAtomicInt`, the **CAS Loop** handles the contention. Threads spin until t
 ## `Records_03_AtomicInt`
 
 Atomic Arithmetic, CAS, and Assignment.
+
+---
+
+<!-- _class: lead -->
+
+# Atomic Safe Sets
+## Thread-Safe Bitmasks with Set Syntax
+
+**Source:** `Source/Records` (AtomicSet Demo)
+
+---
+
+# The Synthesis
+
+We combined **Safe Sets** (Fixed-Size Storage) with **Atomic Integers** (CAS Loops) to create the ultimate flag wrapper: `TAtomicSet`.
+
+**The Challenges:**
+1.  **Storage:** Must be fixed-size (16/32/64-bit) for `Interlocked` functions.
+2.  **Visibility:** Must use `[Volatile]` to prevent register caching.
+3.  **Logic:** Must use **CAS Loops** for `Include`/`Exclude` (Read-Modify-Write).
+
+---
+
+# The Architecture
+
+~~~pascal
+type
+  TAtomicSet = record
+  private
+    // Auto-detects Word, Cardinal, or UInt64
+    [Volatile] FData: TStorage; 
+    
+    // Internal CAS Loop
+    function DoCAS(New, Old: TStorage): Boolean;
+  public
+    // Thread-Safe API
+    function AtomicInclude(Flag: TEnum): TAtomicFlags;
+    function AtomicTransition(FromState, ToState: TAtomicFlags): Boolean;
+    
+    // Local API (Syntax Sugar)
+    class operator Add(Left, Right: TAtomicSet): TAtomicSet;
+    class operator In(Elem: TEnum; Set: TAtomicSet): Boolean;
+  end;
+~~~
+
+---
+
+# Usage: Local vs. Shared
+
+**1. Local Logic (Fast, Non-Atomic)**
+Use standard operators for local calculations.
+~~~pascal
+// Compiles to simple bitwise OR
+NewState := CurrentState + [afReady]; 
+~~~
+
+**2. Shared Logic (Safe, Atomic)**
+Use methods for shared state.
+~~~pascal
+// CAS Loop: Guarantees no lost updates
+SharedFlags.AtomicInclude(afBusy);
+
+// State Machine Transition
+if SharedFlags.AtomicTransition([afQueued], [afRunning]) then
+  StartWork();
+~~~
+
+---
+
+# Demo: The Flag Race
+
+**Demo:** `Records_05_AtomicSet`
+
+**Scenario:**
+*   **7 Threads** running simultaneously.
+*   Each thread tries to set a **Unique Flag** in a shared set.
+
+**Result:**
+*   **Without Atomics:** Race conditions cause bits to be overwritten/lost. Result is random.
+*   **With `AtomicInclude`:** The CAS Loop retries on contention.
+*   **Final State:** `0x7F` (All 7 bits set). Zero data loss.
