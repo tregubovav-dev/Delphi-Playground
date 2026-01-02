@@ -1,4 +1,4 @@
-program Records_05_AtomicSet;
+program Records_04_AtomicSet;
 
 {$APPTYPE CONSOLE}
 

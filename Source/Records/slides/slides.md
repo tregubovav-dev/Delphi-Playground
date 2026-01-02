@@ -491,7 +491,7 @@ if SharedFlags.AtomicTransition([afQueued], [afRunning]) then
 <!-- _class: lead -->
 
 # Demo Time
-## `Records_05_AtomicSet`
+## `Records_04_AtomicSet`
 
 Atomic Bitmask update, CAS, and Assignment.
 
