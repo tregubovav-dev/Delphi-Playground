@@ -1,0 +1,47 @@
+name: Build and Publish Slides
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - '**.md'
+      - '.github/workflows/build-slides.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-slides:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Marp CLI
+        run: npm install -g @marp-team/marp-cli
+
+      - name: Create Output Directories
+        run: |
+          mkdir -p public/helpers
+          mkdir -p public/records
+
+      - name: Build Slides (Helpers)
+        # Using --html to ensure raw HTML tags in markdown are rendered
+        run: marp "Source/Helpers/Slides/slides.md" -o "public/helpers/index.html" --html
+
+      - name: Build Slides (Records)
+        # Note: Checking path case sensitivity from repo structure
+        run: marp "Source/Records/slides/slides.md" -o "public/records/index.html" --html
+
+      - name: Generate Landing Page
+        run: |
+          echo '<!DOCTYPE html><html><head><title>Delphi Playground Presentations</title><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"></head><body><h1>Delphi Playground Presentations</h1><ul><li><a href="helpers/index.html"><strong>Pascal Helpers</strong>: Readability, Safety, and Sustainability</a></li><li><a href="records/index.html"><strong>Advanced Records</strong>: Operator Overloading and Zero-Cost Wrappers</a></li></ul><p><em>Generated from source via GitHub Actions.</em></p></body></html>' > public/index.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/main'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          force_orphan: true
