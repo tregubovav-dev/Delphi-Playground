@@ -156,6 +156,8 @@ begin
     Result := PByte(@Value)^;
   {$ELSEIF SizeOf(TMyFlags) = 2}
     Result := PWord(@Value)^;
+  {$ELSEIF SizeOf(TMyFlags) = 4}
+    Result := PCardinal(@Value)^;
   {$ENDIF}
   
   // Sanitize
@@ -209,6 +211,23 @@ end;
 This approach enhances code clarity and safety when dealing with API handles.
 
 👉 **[See Demo: API Wrappers](https://github.com/tregubovav-dev/Delphi-Playground/tree/main/Source/Helpers/04%20-%20C%20API%20Wrappers/CStyleTypes_01_OpaqueHandle.dpr)**
+
+## 6. Restrictions: Limitations & The Vision
+
+While Helpers are powerful, they are not yet a silver bullet. There are current limitations in the Delphi language compared to other implementations (like Free Pascal) or future expectations.
+
+### Current Limitations
+
+1.  **No Generics:** You cannot define a generic helper (`THelper<T>`) or attach a helper to an open generic type (`helper for TList<T>`). This is widely considered the most critical missing feature for modern frameworks.
+2.  **No Interfaces:** Helpers cannot be attached to `IInterface` types.
+3.  **No Record Inheritance:** Unlike Class Helpers, Record Helpers cannot inherit from other helpers (`helper(TParent) for TRecord`). *(Note: This syntax is supported in FPC)*.
+
+### The Goal: Unified Syntax
+
+Despite these limits, the vision remains: **One mental model for all data types.**
+
+*   **Universal "Active" Syntax:** Enabling `Data.Action` consistently across Objects, Records, and Primitives.
+*   **Bridge, don't Break:** This pattern allows modern syntax to coexist with legacy code without deprecating existing patterns.
 
 ## Conclusion
 

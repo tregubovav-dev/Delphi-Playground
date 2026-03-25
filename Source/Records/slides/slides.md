@@ -121,7 +121,7 @@ type
 
 # Demo 1: The Basics (`Overloads_01`)
 
-We will implement `TDoubleRec` to demonstrate the core operators.
+We will implement `TDoubleRec` in `Records_01_Basics` to demonstrate the core operators.
 
 **1. Implicit Conversion**
 Seamlessly assign `String` to `Record`.
@@ -159,7 +159,7 @@ if TDoubleRec.Equal(Rec, '10.5') then ...
 <!-- _class: lead -->
 
 # Demo Time
-## `Overloads_01_Basics`
+## `Records_01_Basics`
 
 Checking Size, Implicit Casts, and Equality.
 
@@ -371,7 +371,7 @@ if MyAtomic > 0 then ...
 
 # The Ultimate Test: Multithreading
 
-We built a stress test (`Records_04_Multithreading`) to simulate high contention.
+We built a stress test (`Records_03_AtomicInt`) to simulate high contention.
 
 *   **Setup:** 8 Writers fighting to decrement a counter from `33,554,430` to `0`.
 *   **The Switch:** `{$DEFINE USE_PLAIN_INTEGER}` vs `TAtomicInt`.
