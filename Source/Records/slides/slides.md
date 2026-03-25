@@ -48,9 +48,15 @@ style: |
         background-color: transparent !important;
     }
 
+    .hljs-title {
+        color: #FFFF00 !important; /* Yellow */
+        background-color: transparent !important;
+    }
+
     /* 3. Keywords (White - 'begin', 'end', 'var') */
     .hljs-keyword, 
-    .hljs-built_in, 
+    .hljs-built_in,
+    .hljs-meta, 
     .hljs-type {
         color: #FFFFFF !important; /* White */
         font-weight: bold;
@@ -514,3 +520,27 @@ Atomic Bitmask update, CAS, and Assignment.
 ~~~
 
 > **Verdict:** Perfect Data Integrity. Zero bits lost.
+
+---
+
+
+# Summary: Advanced Record Power
+
+*   **Zero-Overhead Wrappers**
+    Encapsulate primitive data with custom behavior while maintaining identical memory footprints.
+*   **Operator Overloading**
+    Take total control of language syntax (`:=`, `+`, `in`) to enforce business rules and type safety.
+*   **Hardware-Level Safety**
+    Use `[Volatile]` and Atomic intrinsics to bake thread-safety directly into your custom value types.
+*   **Strict Binary Interop**
+    Guarantee fixed storage sizes (1, 2, 4 bytes) for reliable communication with C-style APIs and hardware.
+*   **When to Wrap**
+    Use Records instead of Helpers when you need to define a **New Type** with unique identity and behavior.
+
+---
+
+<!-- _class: lead -->
+
+# Thank You!
+
+**License:** MIT (Educational Use)
