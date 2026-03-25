@@ -549,7 +549,7 @@ begin
     Result := PCardinal(@Value)^;
   {$ELSE}
     // Error or Safe Move
-  {$IFEND}
+  {$ENDIF}
   
   // Sanitize high bits
   Result := Result and cMask;
@@ -731,6 +731,42 @@ end;
 ~~~
 
 > **Result:** Safe, clean code with **Zero Runtime Overhead** (methods are inlined).
+
+---
+
+<!-- _class: lead -->
+
+# Section 6: Restrictions
+## Limitations & The Vision
+
+---
+
+<!-- _class: warning -->
+
+# ⚠️ Current Limitations
+
+**1. No Generics**
+*   Cannot define `THelper<T>` or target `TList<T>`.
+*   *Priority:* Despite other limitations in Generics, **Generic Helpers** are the most critical feature needed for modern frameworks.
+
+**2. No Interfaces**
+*   Helpers cannot be attached to `IInterface`.
+
+**3. No Record Inheritance**
+*   `helper(TParent) for TRecord` is not supported.
+*   *(Note: This syntax is supported in FPC)*
+
+---
+
+# The Goal: Unified Syntax
+
+**One mental model for all data types.**
+
+*   **Universal "Active" Syntax**
+    Enables `Data.Action` consistently across Objects, Records, and Primitives.
+
+*   **Bridge, don't Break**
+    This enables modern "Active" syntax to coexist with legacy code. It does **not** deprecate existing patterns, but offers a consistent alternative.
 
 ---
 

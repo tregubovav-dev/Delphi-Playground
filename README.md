@@ -12,7 +12,8 @@ A comprehensive guide to using Class and Record Helpers to improve code readabil
 *   **01 - Introduction:** Basic syntax, Fluent Interfaces, and RTL extension.
 *   **02 - Simple Types:** Patterns for extending primitives (Boolean, Integer) using Distinct Types, plus safe Enums and fluent Arrays.
 *   **03 - Enums and Sets:** Advanced handling of C-style enumerations and bitmasks.
-*   **04 - C API Wrappers** Using C-style Handles as safe Object-Oriented interfaces.
+*   **04 - C API Wrappers:** Using C-style Handles as safe Object-Oriented interfaces.
+*   **05 - Restrictions:** Known limitations (Generics, Interfaces, Inheritance).
 
 ### [Advanced Records](Source/Records/)
 Located in `Source\Records\`.

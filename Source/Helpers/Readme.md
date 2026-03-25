@@ -54,13 +54,20 @@ Demonstrates how to bridge the gap between Pascal's strict, safe Enums and C-sty
     *   **Concept:** Sparse Bitmasks (Explicit Ordinals).
     *   **Feature:** Handling complex C-bitmasks with reserved "holes" (e.g., skipping bits 8-15) by aligning Pascal Enum ordinals directly to bit positions (`eVal = 1`) and using a Helper mask to sanitize data.
 
- ### `04 - C API Wrappers`
+### `04 - C API Wrappers`
 Demonstrates how to wrap raw C-style Handles (`HKEY`, `HWND`, etc.) into safe, Object-Oriented interfaces using Helpers on Distinct Types.
 
 *   **CStyleTypes_01_RegWrapper**
     *   **Concept:** Opaque Handle Wrapper.
     *   **Feature:** Wraps the Windows Registry API (`HKEY`) into a clean `TRegHandle` type.
     *   **Benefit:** Turns `RegOpenKeyEx/RegCloseKey` into `Key.Open/Key.Close` while maintaining binary compatibility with the OS.   
+
+### `05 - Restrictions`
+Highlights current limitations of Delphi Helpers compared to other languages or future expectations.
+*   **Restrictions_01_Generics:** Helpers cannot be generic types or attached to open generic parameters (e.g., `helper for TList<T>`).
+*   **Restrictions_02_Interfaces:** Interface types cannot have helpers (unlike Classes or Records).
+*   **Restrictions_03_Inheritance:** Record Helpers cannot inherit from other helpers (unlike Class Helpers).
+    *   *Note:* This syntax is supported in Free Pascal (FPC).
 
 ## Prerequisites
 
