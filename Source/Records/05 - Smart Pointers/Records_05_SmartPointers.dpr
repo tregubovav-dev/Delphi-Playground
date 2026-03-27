@@ -306,56 +306,89 @@ type
   TArcWorker = class(TThread)
   private
     FData: TArcClass<TDummyObj>;
+    FStartEvent: TSimpleEvent;
+    FStopNotify: TCountdownEvent;
   protected
     procedure Execute; override;
   public
-    constructor Create(const AData: TArcClass<TDummyObj>);
+    constructor Create(const AData: TArcClass<TDummyObj>;
+      AStartEvent: TSimpleEvent; AStopNotify: TCountdownEvent);
   end;
 
-constructor TArcWorker.Create(const AData: TArcClass<TDummyObj>);
+constructor TArcWorker.Create(const AData: TArcClass<TDummyObj>;
+  AStartEvent: TSimpleEvent; AStopNotify: TCountdownEvent);
 begin
   // Thread takes ownership of the ARC reference
   inherited Create(False);
   FData := AData;
   FreeOnTerminate:=True; // Thread will clean itself up
+  FStartEvent:=AStartEvent;
+  FStopNotify:=AStopNotify;
 end;
 
 procedure TArcWorker.Execute;
 begin
+  // Wait for FStartEvent occured. If not flag set (error, lost, etc.) - exitting.
+  if FStartEvent.WaitFor <> wrSignaled then
+    Exit;
+
   Sleep(150+Random(100)); // Simulate background processing
   FData.Instance.DoWork('Background Thread');
   Writeln('    [TArcWorker] Thread finishing. FData will go out of scope now.');
+  FData.Release;
+  FStopNotify.Signal;
 end;
 
 procedure Example5_FireAndForget;
+const
+  cThreadCount = 4;
+
 var
   i: integer;
+  lStart: TSimpleEvent;
+  lStop: TCountdownEvent;
 
 begin
   Writeln(sLineBreak + '--- Example #5: Fire and Forget (ARC) ---');
   Writeln('Objective: Main thread creates an object, passes it to a thread, and forgets it.');
 
-  Writeln(sLineBreak + '  [Code] Entering local scope to create object...');
-  begin
-    // Create the object and the ARC wrapper
-    var lTempObj := TArcClass<TDummyObj>.Create(TDummyObj.Create('BackgroundService'));
+  lStart:=nil;
+  lStop:=nil;
+  try
 
-    Writeln('  [Code] Spawning 4 threads and passing lTempObj...');
-    // Pass to threads (RefCount becomes 5)
-    for i:=0 to 3 do
-      TArcWorker.Create(lTempObj);
+    lStart:=TSimpleEvent.Create;
+    lStop:=TCountdownEvent.Create(cThreadCount);
 
-    Writeln('  [Code] Exiting local scope. Main thread drops its reference.');
-    // lTempObj goes out of scope here (RefCount drops to 4)
+    Writeln(sLineBreak + '  [Code] Entering local scope to create object...');
+    begin
+      // Create the object and the ARC wrapper
+      var lTempObj := TArcClass<TDummyObj>.Create(TDummyObj.Create('BackgroundService'));
+
+      Writeln('  [Code] Spawning 4 threads and passing lTempObj...');
+      // Pass to threads (RefCount becomes 5)
+      for i:=1 to cThreadCount do
+        TArcWorker.Create(lTempObj, lStart, lStop);
+
+      Writeln('  [Code] Exiting local scope. Main thread drops its reference.');
+      // lTempObj goes out of scope here (RefCount drops to 4)
+    end;
+
+    Writeln('  [Main] Main thread is now doing other things...');
+    Writeln('  [Main] The object is ALIVE, owned purely by the background thread.');
+
+    // Fire the lStart event
+    Writeln('  [Main] Starting the BackgroundServices...');
+    lStart.SetEvent;
+
+    // Wait until the background threads to finish to show the console output
+    Writeln('  [Main] Waiting for BackgroundServices completion ...');
+    lStop.WaitFor;
+
+    Writeln('  [Main] Example 5 finished.');
+  finally
+    lStart.Free;
+    lStop.Free;
   end;
-
-  Writeln('  [Main] Main thread is now doing other things...');
-  Writeln('  [Main] The object is ALIVE, owned purely by the background thread.');
-
-  // Wait enough time for the background thread to finish to show the console output
-  Sleep(1500);
-
-  Writeln('  [Main] Example 5 finished.');
 end;
 
 begin

@@ -28,8 +28,9 @@ type
     private
       FRefCount: TAtomicInt;
       FValuePtr: PT;
-      function GetRefCount: Integer; inline;
-      function GetValue: T; inline;
+      function GetRefCount: Integer; {$IFNDEF DEBUG}inline;{$ENDIF}
+      function GetValue: T; {$IFNDEF DEBUG}inline;{$ENDIF}
+      function Release: Integer;
     public
       constructor Create(AValuePtr: PT);
 
@@ -37,7 +38,7 @@ type
       class function ReleaseBlock(var ABlock: PControlBlock): Integer; static;
 
       /// <summary>Increments RefCount. Returns new count.</summary>
-      function UseBlock: Integer; inline;
+      function UseBlock: Integer; {$IFNDEF DEBUG}inline;{$ENDIF}
 
       property RefCount: Integer read GetRefCount;
       property ValuePtr: PT read FValuePtr;
@@ -47,10 +48,10 @@ type
   private
     FBlock: PControlBlock;
 
-    procedure Release;
-    function GetValue: T; inline;
-    function GetRefCount: Integer; inline;
+    function GetValue: T; {$IFNDEF DEBUG}inline;{$ENDIF}
+    function GetRefCount: Integer; {$IFNDEF DEBUG}inline;{$ENDIF}
     function GetValuePtr: PT;
+    function GetIsAssigned: Boolean; {$IFNDEF DEBUG}inline;{$ENDIF}
   public
     // -------------------------------------------------------------------------
     // Factory Methods
@@ -61,6 +62,13 @@ type
     ///   The memory is automatically freed when all references go out of scope.
     /// </summary>
     class function Create(AValue: T): TSmartPointer<T>; static;
+
+    /// <summary>
+    ///   Explicitly releases the current reference.
+    ///   If this is the last reference, the underlying object is disposed.
+    ///   The Smart Pointer is set to nil (unassigned) after this call.
+    /// </summary>
+    procedure Release;
 
     // -------------------------------------------------------------------------
     // Custom Managed Record Operators
@@ -80,14 +88,14 @@ type
     /// <summary>Implicit cast to the underlying value type (T).</summary>
     class operator Implicit(const AValue: TSmartPointer<T>): T;
 
-    /// <summary>Checks if the smart pointer contains data.</summary>
-    function IsAssigned: Boolean; inline;
-
     procedure PrintStatus(AIdent: integer; AName: string);
 
     // -------------------------------------------------------------------------
     // Properties
     // -------------------------------------------------------------------------
+
+    /// <summary>Checks if the smart pointer contains data.</summary>
+    property IsAssigned: boolean read GetIsAssigned;
 
     property ValuePTR: PT read GetValuePtr;
 
@@ -118,7 +126,8 @@ type
     private
       FRefCount: TAtomicInt;
       FInstance: T;
-      function GetRefCount: Integer; inline;
+      function Release: integer; {$IFNDEF DEBUG}inline;{$ENDIF}
+      function GetRefCount: Integer; {$IFNDEF DEBUG}inline;{$ENDIF}
     public
       constructor Create(AInstance: T);
 
@@ -126,7 +135,7 @@ type
       class function ReleaseBlock(var ABlock: PControlBlock): Integer; static;
 
       /// <summary>Increments RefCount. Returns new count.</summary>
-      function UseBlock: Integer; inline;
+      function UseBlock: Integer; {$IFNDEF DEBUG}inline;{$ENDIF}
 
       property RefCount: Integer read GetRefCount;
       property Instance: T read FInstance;
@@ -134,10 +143,11 @@ type
 
   private
     FBlock: PControlBlock;
+    FReleased: boolean;
 
-    procedure Release;
-    function GetInstance: T; inline;
-    function GetRefCount: Integer; inline;
+    function GetIsAssigned: Boolean; {$IFNDEF DEBUG}inline;{$ENDIF}
+    function GetInstance: T; {$IFNDEF DEBUG}inline;{$ENDIF}
+    function GetRefCount: Integer; {$IFNDEF DEBUG}inline;{$ENDIF}
   public
     // -------------------------------------------------------------------------
     // Factory Methods
@@ -148,6 +158,13 @@ type
     ///   The object's Destroy method is called when all references are lost.
     /// </summary>
     class function Create(AInstance: T): TArcClass<T>; static;
+
+    /// <summary>
+    ///   Explicitly releases the current reference.
+    ///   If this is the last reference, the underlying object is destroyed.
+    ///   The Smart Pointer is set to nil (unassigned) after this call.
+    /// </summary>
+    procedure Release;
 
     // -------------------------------------------------------------------------
     // Custom Managed Record Operators
@@ -164,12 +181,12 @@ type
     /// <summary>Implicit cast to the underlying class type.</summary>
     class operator Implicit(const AValue: TArcClass<T>): T;
 
-    /// <summary>Checks if the instance is assigned.</summary>
-    function IsAssigned: Boolean; inline;
-
     // -------------------------------------------------------------------------
     // Properties
     // -------------------------------------------------------------------------
+
+    /// <summary>Checks if the instance is assigned.</summary>
+    property IsAssigned: boolean read GetIsAssigned;
 
     /// <summary>Direct access to the underlying object instance.</summary>
     property Instance: T read GetInstance;
@@ -201,24 +218,29 @@ begin
   Result:=FRefCount.Value;
 end;
 
+function TSmartPointer<T>.TControlBlock.Release: Integer;
+begin
+  Result:=FRefCount.Decrement;
+  Writeln(Format('>>[SmartPtr] Released reference. RefCount remaining: %d', [Result]));
+
+  if Result <= 0 then
+  begin
+    Writeln(Format('>>[SmartPtr] RefCount 0. Freeing ValuePtr %p', [Pointer(FValuePtr)]));
+    if Assigned(FValuePtr) then
+      Dispose(FValuePtr);
+
+    Dispose(@Self);
+    Writeln('>>[SmartPtr] Block destroyed.');
+  end;
+end;
+
 class function TSmartPointer<T>.TControlBlock.ReleaseBlock(var ABlock: PControlBlock): Integer;
 begin
   if not Assigned(ABlock) then
     Exit(0);
 
-  Result:=ABlock^.FRefCount.Decrement;
-  Writeln(Format('>>[SmartPtr] Released reference. RefCount remaining: %d', [Result]));
-
-  if Result <= 0 then
-  begin
-    Writeln(Format('>>[SmartPtr] RefCount 0. Freeing ValuePtr %p', [Pointer(ABlock^.FValuePtr)]));
-    if Assigned(ABlock^.FValuePtr) then
-      Dispose(ABlock^.FValuePtr);
-
-    Dispose(ABlock);
-    ABlock:=nil;
-    Writeln('>>[SmartPtr] Block destroyed.');
-  end;
+  Result:=ABlock^.Release;
+  Ablock:=nil;
 end;
 
 function TSmartPointer<T>.TControlBlock.UseBlock: Integer;
@@ -301,7 +323,7 @@ begin
   Result:=AValue.GetValue;
 end;
 
-function TSmartPointer<T>.IsAssigned: Boolean;
+function TSmartPointer<T>.GetIsAssigned: Boolean;
 begin
   Result:=Assigned(FBlock) and Assigned(FBlock^.ValuePtr);
 end;
@@ -350,25 +372,29 @@ begin
   Result:=FRefCount.Value;
 end;
 
-class function TArcClass<T>.TControlBlock.ReleaseBlock(var ABlock: PControlBlock): Integer;
+function TArcClass<T>.TControlBlock.Release: integer;
 begin
-  if not Assigned(ABlock) then Exit(0);
-
-  Result:=ABlock^.FRefCount.Decrement;
+  Result:=FRefCount.Decrement;
   Writeln(Format('>>[ARC] Released reference. RefCount remaining: %d', [Result]));
-
   if Result <= 0 then
   begin
-    Writeln(Format('>>[ARC] RefCount 0. Destroying Object %s', [ABlock^.FInstance.ClassName]));
+    Writeln(Format('>>[ARC] RefCount 0. Destroying Object %s', [FInstance.ClassName]));
 
     // Call Destroy via Free to be safe against nil instances
-    if Assigned(ABlock^.FInstance) then
-      ABlock^.FInstance.Free;
+    if Assigned(FInstance) then
+      FInstance.Free;
 
-    Dispose(ABlock);
-    ABlock:=nil;
+    Dispose(@Self);
     Writeln('>>[ARC] Block destroyed.');
   end;
+end;
+
+class function TArcClass<T>.TControlBlock.ReleaseBlock(var ABlock: PControlBlock): Integer;
+begin
+  if not Assigned(ABlock) then
+    Exit(0);
+  Result:=ABlock^.Release;
+  ABlock:=nil;
 end;
 
 function TArcClass<T>.TControlBlock.UseBlock: Integer;
@@ -395,7 +421,7 @@ begin
   if not Assigned(FBlock) then Exit;
 
   // Atomically decrement the reference count, free it and assign FBlock:=nil if 0
-  lRemaining:=TControlBlock.ReleaseBlock(FBlock);
+  TControlBlock.ReleaseBlock(FBlock);
 end;
 
 // --- Managed Record Operators ---
@@ -434,7 +460,7 @@ begin
   Result:=AValue.GetInstance;
 end;
 
-function TArcClass<T>.IsAssigned: Boolean;
+function TArcClass<T>.GetIsAssigned: Boolean;
 begin
   Result:=Assigned(FBlock) and Assigned(FBlock^.FInstance);
 end;
