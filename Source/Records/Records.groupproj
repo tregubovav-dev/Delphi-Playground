@@ -15,6 +15,9 @@
         <Projects Include="04 - Atomic Set\Records_04_AtomicSet.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="05 - Smart Pointers\Records_05_SmartPointers.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -59,14 +62,23 @@
     <Target Name="Records_04_AtomicSet:Make">
         <MSBuild Projects="04 - Atomic Set\Records_04_AtomicSet.dproj" Targets="Make"/>
     </Target>
+    <Target Name="Records_05_SmartPointers">
+        <MSBuild Projects="05 - Smart Pointers\Records_05_SmartPointers.dproj"/>
+    </Target>
+    <Target Name="Records_05_SmartPointers:Clean">
+        <MSBuild Projects="05 - Smart Pointers\Records_05_SmartPointers.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Records_05_SmartPointers:Make">
+        <MSBuild Projects="05 - Smart Pointers\Records_05_SmartPointers.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="Overloads_01_Basics;Records_02_SafeSet;Records_03_AtomicInt;Records_04_AtomicSet"/>
+        <CallTarget Targets="Overloads_01_Basics;Records_02_SafeSet;Records_03_AtomicInt;Records_04_AtomicSet;Records_05_SmartPointers"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Overloads_01_Basics:Clean;Records_02_SafeSet:Clean;Records_03_AtomicInt:Clean;Records_04_AtomicSet:Clean"/>
+        <CallTarget Targets="Overloads_01_Basics:Clean;Records_02_SafeSet:Clean;Records_03_AtomicInt:Clean;Records_04_AtomicSet:Clean;Records_05_SmartPointers:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Overloads_01_Basics:Make;Records_02_SafeSet:Make;Records_03_AtomicInt:Make;Records_04_AtomicSet:Make"/>
+        <CallTarget Targets="Overloads_01_Basics:Make;Records_02_SafeSet:Make;Records_03_AtomicInt:Make;Records_04_AtomicSet:Make;Records_05_SmartPointers:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

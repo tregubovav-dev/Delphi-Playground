@@ -31,6 +31,15 @@ Implements wrappers that enforce atomic access patterns using `LOCK` intrinsics 
     *   **The Ultimate Wrapper:** Combines **Safe Sets** (Fixed Size) with **Atomic CAS Loops**.
     *   **Features:** `AtomicInclude`, `AtomicExclude`, `AtomicTransition`. Allows thread-safe flag management without critical sections.
 
+### `04 - Smart Pointers`
+**Goal:** Automatic Memory Management (RAII & ARC).
+Utilizes Delphi 10.4+ Custom Managed Records to build C++ style Smart Pointers.
+*   **Records_05_SmartPointers:**
+    *   **`TSmartPointer<T>`:** Manages heap allocations for value types and pointers automatically.
+    *   **`TArcClass<T>`:** Re-implements Automatic Reference Counting for standard Delphi classes without requiring `Interface` implementation.
+    *   **Fire and Forget:** Pass objects to background threads safely; the last thread alive frees the memory.
+    *   **Explicit Control:** Use the `.Release` method to drop references deterministically before the scope ends.
+
 ## Prerequisites
 *   **Compiler:** Delphi 10.4 Sydney or newer (Required for `AtomicCmpExchange` intrinsics).
 *   **Platform:** Windows/Linux/macOS (Console).

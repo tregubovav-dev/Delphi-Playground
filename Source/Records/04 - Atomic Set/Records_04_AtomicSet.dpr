@@ -18,7 +18,8 @@ uses
   System.SyncObjs,
   System.Generics.Collections,
   Playground.Utils in '..\..\Common\Playground.Utils.pas',
-  Playground.Records.AtomicSet in 'Playground.Records.AtomicSet.pas';
+  Playground.Records.AtomicSet in 'Playground.Records.AtomicSet.pas',
+  Playground.Records.Atomic in '..\03 - Atomic Wrapper\Playground.Records.Atomic.pas';
 
 // -----------------------------------------------------------------------------
 // Example 1: Syntax & Operators
