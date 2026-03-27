@@ -537,9 +537,113 @@ Atomic Bitmask update, CAS, and Assignment.
 *   **When to Wrap**
     Use Records instead of Helpers when you need to define a **New Type** with unique identity and behavior.
 
+
 ---
 
 <!-- _class: lead -->
+
+# Section 6: Smart Pointers & ARC
+## Resource Management with Managed Records
+
+**Source:** `Source/Records` (SmartPointers Demo)
+
+---
+
+# Custom Managed Records (CMR)
+
+Delphi 10.4+ allows records to manage their own lifecycle.
+
+~~~pascal
+type
+  TSmartPointer<T> = record
+    class operator Initialize(out Dest: TSmartPointer<T>);
+    class operator Finalize(var Dest: TSmartPointer<T>);
+    class operator Assign(var Dest; const [ref] Src);
+  end;
+~~~
+
+**The Goal:** Automatic Reference Counting (ARC) and memory management (RAII). When the record leaves the local scope, the compiler automatically injects the `Finalize` call to clean up resources.
+
+---
+
+# `TSmartPointer<T>`: Value Types
+
+Manages heap allocation for Records or Primitives.
+**Caveat:** It exposes typed pointers (`^T`). The consumer code is responsible for dereferencing it correctly (`ValuePtr^`).
+
+**Best Practice:**
+Use a **Record Helper** on the instantiated Smart Pointer type to define properties and hide the raw pointer manipulation.
+
+~~~pascal
+type TExamplePtr = TSmartPointer<TExampleRec>;
+
+TExamplePtrHelper = record helper for TExamplePtr
+  // Hide pointer dereferencing inside getters/setters!
+  function GetName: string; begin Result := ValuePtr^.Name; end;
+  property Name: string read GetName;
+end;
+~~~
+
+---
+
+# `TArcClass<T>`: Objects
+
+Re-implements Automatic Reference Counting (ARC) for standard Delphi classes. Perfect for the **"Create, Assign, and Forget"** pattern.
+
+~~~pascal
+var
+  Obj: TArcClass<TService>;
+begin
+  Obj := TArcClass<TService>.Create(TService.Create);
+
+  // Pass 'Obj' to 4 background threads.
+  for i := 1 to 4 do TWorker.Create(Obj);
+
+  // Main thread forgets it. 
+  // The last thread to finish automatically calls TService.Destroy!
+end;
+~~~
+
+---
+
+<!-- _class: warning -->
+
+# ⚠️ Thread Safety & Risks
+
+You must understand the boundaries and risks of Smart Pointers before using them:
+
+1.  **Assignments ARE Safe:** Passing the wrapper to another thread is thread-safe. The `RefCount` is updated using Atomic operations.
+2.  **Data IS NOT Safe:** Reading or writing the *underlying data* (e.g., `ValuePtr^.Number`) in a multithreaded environment still requires your own locks or `TInterlocked` primitives!
+3.  **Cyclic References:** Just like interfaces, if two smart pointers point to each other, they will never reach a RefCount of 0 and will leak memory.
+
+---
+
+# Performance: CMRs vs Interfaces
+
+Why build Record Wrappers instead of just using `IInterface`?
+
+*   **No VMT Overhead:** Records don't have Virtual Method Tables.
+*   **No COM Baggage:** No need to implement `QueryInterface`, `_AddRef`, or `_Release` on your classes. You can wrap *any* existing class.
+*   **Deterministic Execution:** The compiler guarantees the `Finalize` cleanup call is injected exactly when the record leaves the scope.
+
+> **Result:** A lightweight, high-performance RAII (Resource Acquisition Is Initialization) pattern for modern Pascal.
+
+---
+
+<!-- _class: lead -->
+
+# Demo Time
+## `Records_05_SmartPointers`
+
+Lifecycle, Exceptions, Multithreading, and "Fire & Forget" ARC.
+
+---
+
+<!-- _class: lead -->
+
+# Conclusion
+
+Advanced Records give us total control over memory, operators, and syntax.
 
 # Thank You!
 
