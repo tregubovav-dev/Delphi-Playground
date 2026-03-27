@@ -38,9 +38,9 @@ jobs:
         working-directory: ${{ github.workspace }}
         run: |
           # Convert Helpers slides
-          marp Source/Helpers/Slides/slides.md -o Source/Helpers/Slides/slides.html
+          marp "Source/Helpers/Slides/slides.md" -o "Source/Helpers/Slides/slides.html" --html
           # Convert Records slides
-          marp Source/Records/Slides/slides.md -o Source/Records/Slides/slides.html
+          marp "Source/Records/Slides/slides.md" -o "Source/Records/Slides/slides.html" --html
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
