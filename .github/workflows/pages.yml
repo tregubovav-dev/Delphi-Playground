@@ -2,7 +2,7 @@ name: Build and Deploy GitHub Pages
 
 on:
   push:
-    branches: [ main, correction ] # Runs every time you push to main
+    branches: [ main ] # Runs every time you push to main
   workflow_dispatch:   # Allows manual trigger from the Actions tab
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
