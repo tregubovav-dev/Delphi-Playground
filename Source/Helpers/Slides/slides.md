@@ -31,17 +31,47 @@ style: |
 
   /* 4. Code & Typography */
   code { font-family: 'Consolas', 'Courier New', monospace; background: #f0f0f0; padding: 2px 5px; border-radius: 4px; }
-  pre { background: #1e1e1e; color: #d4d4d4; font-size: 18px; }
-  blockquote { font-size: 75%; color: #666; border-left: 4px solid #b91d47; background: #f9f9f9; padding: 10px; }
-  
-  /* 5. Warning Slide */
-  section.warning h1 { color: #d9534f; }
-  section.warning strong { color: #d9534f; }
-  section.warning blockquote { border-left-color: #d9534f; background: #fff0f0; color: #a94442; }
-
   h1 { color: #2b5797; }
   h2 { color: #20406b; }
   strong { color: #b91d47; }
+
+    /* 1. The Container (Blue Screen) */
+    pre {
+        background-color: #000080 !important; /* Turbo Blue */
+        border: 4px double #C0C0C0; /* DOS-style Border */
+        padding: 15px;
+    }
+
+    /* 2. Base Text (Yellow - like normal identifiers in TP) */
+    pre code {
+        color: #FFFF00 !important; /* Yellow */
+        background-color: transparent !important;
+    }
+
+    /* 3. Keywords (White - 'begin', 'end', 'var') */
+    .hljs-keyword, 
+    .hljs-built_in, 
+    .hljs-type {
+        color: #FFFFFF !important; /* White */
+        font-weight: bold;
+    }
+
+    /* 4. Strings (Cyan or Light Green - readable on Blue) */
+    /* TP used #00FFFF (Cyan) or #FFFFFF for strings often. Let's try Cyan for contrast. */
+    .hljs-string {
+        color: #00FFFF !important; /* Cyan */
+    }
+
+    /* 5. Numbers (Light Green or Bright White) */
+    .hljs-number {
+        color: #00FF00 !important; /* Bright Green */
+    }
+
+    /* 6. Comments (Gray or Dimmed) */
+    .hljs-comment {
+        color: #C0C0C0 !important; /* Light Gray */
+        font-style: italic;
+    }  
 ---
 
 # Modernizing Pascal
