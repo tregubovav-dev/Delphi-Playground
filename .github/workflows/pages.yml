@@ -1,0 +1,55 @@
+name: Build and Deploy GitHub Pages
+
+on:
+  push:
+    branches: [ main ] # Runs every time you push to main
+  workflow_dispatch:   # Allows manual trigger from the Actions tab
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build_and_deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js (for Marp)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24' # Updated to modern LTS
+
+      - name: Install Marp CLI
+        run: npm install -g @marp-team/marp-cli
+
+      - name: Build Marp Slides to HTML
+        run: |
+          # Convert Helpers slides
+          marp Source/Helpers/Slides/slides.md -o Source/Helpers/Slides/slides.html
+          # Convert Records slides
+          marp Source/Records/Slides/slides.md -o Source/Records/Slides/slides.html
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload the entire repository root (including the newly generated HTML slides)
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
