@@ -606,6 +606,37 @@ end;
 
 ---
 
+# Explicit Lifecycle Control
+
+While the compiler automatically calls `Finalize` at the end of the scope, sometimes you need to release heavy resources early.
+
+We expose a public `Release` method for deterministic control:
+> __See next slide__
+
+---
+
+# Explicit Lifecycle Control (cont.)
+~~~pascal
+var
+  Obj: TArcClass<THeavyService>;
+begin
+  Obj := TArcClass<THeavyService>.Create(THeavyService.Create);
+  
+  Obj.Instance.DoWork;
+  
+  // Explicitly drop the reference before the scope ends.
+  // Decrements RefCount and sets the internal block to nil.
+  Obj.Release; 
+  
+  if not Obj.IsAssigned then
+    Writeln('Memory freed early!');
+end;
+~~~
+
+> **Flexibility:** You get the safety of automatic ARC, with the precise control of manual memory management.
+
+---
+
 <!-- _class: warning -->
 
 # ⚠️ Thread Safety & Risks
@@ -620,7 +651,7 @@ You must understand the boundaries and risks of Smart Pointers before using them
 
 # Performance: CMRs vs Interfaces
 
-Why build Record Wrappers instead of just using `IInterface`?
+Why build Record Wrappers instead of just using `Interface` type(s)?
 
 *   **No VMT Overhead:** Records don't have Virtual Method Tables.
 *   **No COM Baggage:** No need to implement `QueryInterface`, `_AddRef`, or `_Release` on your classes. You can wrap *any* existing class.

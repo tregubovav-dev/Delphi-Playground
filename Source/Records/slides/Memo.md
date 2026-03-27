@@ -220,6 +220,24 @@ begin
   // Memory leaks are impossible.
 end;
 ```
+### Explicit Lifecycle Control
+
+While RAII (scope-based cleanup) handles 95% of use cases, there are times when you are holding onto a heavy resource (like a database connection or large memory buffer) and need to release it *before* the method finishes executing. 
+
+To support this, our Smart Pointers expose a public `Release` method. 
+
+```pascal
+var
+  HeavyRes: TArcClass<THeavyResource>;
+begin
+  HeavyRes := TArcClass<THeavyResource>.Create(THeavyResource.Create);
+  HeavyRes.Instance.ProcessData;
+  
+  // Deterministically drop the reference early
+  HeavyRes.Release; 
+  
+  // ... do other long-running work ...
+end;
 
 ### Why use Managed Records instead of Interfaces?
 1.  **No VMT Overhead:** Records do not require a Virtual Method Table.
