@@ -2,7 +2,7 @@ name: Build and Deploy GitHub Pages
 
 on:
   push:
-    branches: [ gh-pages ] # Using gh-pages as per your current setup
+    branches: [ gh-pages ]
   workflow_dispatch:
 
 permissions:
@@ -22,68 +22,62 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       # --- Setup Node.js for Marp ---
-      - name: Setup Node.js (for Marp)
-        uses: actions/setup-node@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '24' # Keeping v24 as discussed
+          node-version: '24'
 
       - name: Install Marp CLI
         run: npm install -g @marp-team/marp-cli
 
-      # --- Build Marp Slides to HTML first ---
-      # We build them into a temporary folder that Jekyll won't touch yet
-      - name: Build Marp Slides to HTML
-        working-directory: ${{ github.workspace }}
+      # --- Build Marp Slides ---
+      - name: Build Marp Slides
         run: |
-          mkdir -p ._marp_html_output/Source/Helpers/Slides
-          mkdir -p ._marp_html_output/Source/Records/Slides
-          marp "Source/Helpers/Slides/slides.md" -o "._marp_html_output/Source/Helpers/Slides/slides.html"
-          marp "Source/Records/Slides/slides.md" -o "._marp_html_output/Source/Records/Slides/slides.html"
+          mkdir -p ._marp_output/Source/Helpers/Slides
+          mkdir -p ._marp_output/Source/Records/Slides
+          marp "Source/Helpers/Slides/slides.md" -o "._marp_output/Source/Helpers/Slides/slides.html"
+          marp "Source/Records/Slides/slides.md" -o "._marp_output/Source/Records/Slides/slides.html"
 
-      # --- Setup Ruby and Jekyll ---
+      # --- Setup Ruby for Jekyll ---
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1' # Standard Jekyll requirement
+          ruby-version: '3.1'
 
-      - name: Install Jekyll dependencies
-        run: |
-          gem install bundler jekyll jekyll-theme-cayman
-          # If you have a Gemfile for custom plugins, uncomment this:
-          # bundle install
+      - name: Install Jekyll
+        run: gem install jekyll jekyll-theme-cayman
 
-      # --- Run Jekyll to build the final _site ---
+      # --- Prepare and Build Jekyll Site ---
       - name: Build Jekyll Site
-        working-directory: ${{ github.workspace }}
         run: |
-          # 1. Copy all Markdown articles and _config.yml to Jekyll's source directory
-          #    Jekyll will process these into HTML
-          mkdir -p _jekyll_source/Source/Helpers/Slides
-          mkdir -p _jekyll_source/Source/Records/Slides
-          cp index.md _jekyll_source/
-          cp _config.yml _jekyll_source/
-          cp Source/Helpers/Slides/Memo.md _jekyll_source/Source/Helpers/Slides/
-          cp Source/Records/Slides/Memo.md _jekyll_source/Source/Records/Slides/ # Assuming a Memo for Records too
-
-          # 2. Copy the Marp-generated HTML slides into Jekyll's output structure
-          #    Jekyll will NOT re-process .html files, it just copies them.
-          cp -r ._marp_html_output/* _jekyll_source/ # Copy all Marp HTML into Jekyll's source
-
-          # 3. Run Jekyll build command
-          #    -s: source directory, -d: destination directory (_site)
-          jekyll build -s _jekyll_source -d _site
+          mkdir -p _jekyll_src/Source/Helpers/Slides
+          mkdir -p _jekyll_src/Source/Records/Slides
+          
+          # Inject Front Matter to index.md (This forces Jekyll to render it)
+          echo -e "---\nlayout: default\n---\n\n$(cat index.md)" > _jekyll_src/index.md
+          
+          # Inject Front Matter to Memos
+          echo -e "---\nlayout: default\n---\n\n$(cat Source/Helpers/Slides/Memo.md)" > _jekyll_src/Source/Helpers/Slides/Memo.md
+          echo -e "---\nlayout: default\n---\n\n$(cat Source/Records/Slides/Memo.md)" > _jekyll_src/Source/Records/Slides/Memo.md
+          
+          # Copy config and Marp HTML
+          cp _config.yml _jekyll_src/
+          cp -r ._marp_output/* _jekyll_src/
+          
+          # Run Jekyll
+          jekyll build -s _jekyll_src -d _site
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload artifact (ONLY the _site directory)
-        uses: actions/upload-pages-artifact@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: '_site'
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@v4
