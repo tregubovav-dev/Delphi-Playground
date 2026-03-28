@@ -5,8 +5,8 @@ title: Delphi Playground
 
 <style>
   header ul { display: none !important; } 
-  header { padding: 20px 0 !important; } 
-  section { padding: 20px 0 !important; }
+  header { padding: 1.5em 1.5em !important; } 
+  section { padding: 1.5em 1.5em !important; }
 </style>
 
 # Delphi Playground: Modernizing Object Pascal

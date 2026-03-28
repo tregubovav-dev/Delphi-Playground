@@ -48,7 +48,7 @@ jobs:
           ruby-version: '3.1'
 
       - name: Install Jekyll
-        run: gem install jekyll jekyll-theme-modernist
+        run: gem install jekyll jekyll-theme-modernist jekyll-theme-cayman jekyll-remote-theme
 
       # --- Prepare and Build Jekyll Site ---
       - name: Build Jekyll Site
