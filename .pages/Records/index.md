@@ -1,3 +1,14 @@
+---
+layout: default
+title: Delphi Playground
+---
+
+<style>
+  header ul { display: none !important; } 
+  header { padding: 20px 0 !important; } 
+  section { padding: 20px 0 !important; }
+</style>
+
 # Advanced Records in Delphi: Operator Overloading, Atomics, and Smart Pointers
 
 **By Alexander Tregubov**

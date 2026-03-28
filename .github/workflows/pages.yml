@@ -48,7 +48,7 @@ jobs:
           ruby-version: '3.1'
 
       - name: Install Jekyll
-        run: gem install jekyll jekyll-theme-cayman
+        run: gem install jekyll jekyll-theme-modernist
 
       # --- Prepare and Build Jekyll Site ---
       - name: Build Jekyll Site
@@ -57,11 +57,11 @@ jobs:
           mkdir -p _jekyll_src/Records/Slides
           
           # Inject Front Matter to index.md (This forces Jekyll to render it)
-          echo -e "---\nlayout: default\n---\n\n$(cat .pages/index.md)" > _jekyll_src/index.md
+          cp .pages/index.md _jekyll_src/index.md
           
           # Inject Front Matter to Memos
-          echo -e "---\nlayout: default\n---\n\n$(cat .pages/Helpers/index.md)" > _jekyll_src/Helpers/Memo.md
-          echo -e "---\nlayout: default\n---\n\n$(cat .pages/Records/index.md)" > _jekyll_src/Records/Memo.md
+          cp .pages/Helpers/index.md _jekyll_src/Helpers/index.md
+          cp .pages/Records/index.md _jekyll_src/Records/index.md
           
           # Copy config and Marp HTML
           cp .pages/_config.yml _jekyll_src/

@@ -1,7 +1,12 @@
+---
+layout: default
+title: Delphi Playground
+---
+
 <style>
-  .page-header {
-    padding: 2rem 3rem !important; /* Reduces top/bottom padding */
-  }
+  header ul { display: none !important; } 
+  header { padding: 20px 0 !important; } 
+  section { padding: 20px 0 !important; }
 </style>
 
 # Delphi Playground: Modernizing Object Pascal

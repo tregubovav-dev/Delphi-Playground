@@ -1,3 +1,14 @@
+---
+layout: default
+title: Delphi Playground
+---
+
+<style>
+  header ul { display: none !important; } 
+  header { padding: 20px 0 !important; } 
+  section { padding: 20px 0 !important; }
+</style>
+
 # Modernizing Object Pascal: Readability, Safety, and Sustainability with Helpers
 
 **By Alexander Tregubov**
