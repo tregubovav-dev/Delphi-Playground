@@ -20,7 +20,7 @@ In this series, we explore how to use **Class and Record Helpers** to completely
 *   **Distinct Types:** Use `type TMyInt = type Integer` to attach domain logic to primitives without conflicting with standard RTL helpers.
 *   **Taming C-APIs:** Safely map sparse C-Enums, integer bitmasks, and Opaque Handles (`HKEY`, `HWND`) into clean, Object-Oriented Pascal interfaces.
 
-👉 **[Read the full article: Modernizing Pascal with Helpers ➔](Source/Helpers/Slides/Memo.md)**  
+👉 **[Read the full article: Modernizing Pascal with Helpers ➔](Helpers/Memo.html)**  
 *(Includes presentation slides and code examples)*
 
 ---
@@ -37,7 +37,7 @@ In this series, we step beyond Helpers to build powerful, zero-overhead wrappers
 *   **Lock-Free Atomics:** Bake thread-safety directly into your types using `[Volatile]` fields and Compare-And-Swap (CAS) loops.
 *   **Smart Pointers & ARC:** Utilize Delphi 10.4+ Custom Managed Records (CMR) to implement Automatic Reference Counting (ARC) and true RAII (Resource Acquisition Is Initialization) for both value types and classes.
 
-👉 **[Read the full article: Advanced Records in Delphi ➔](Source/Records/Slides/Memo.md)**  
+👉 **[Read the full article: Advanced Records in Delphi ➔](Records/Memo.html)**  
 *(Includes presentation slides and code examples)*
 
 ---
