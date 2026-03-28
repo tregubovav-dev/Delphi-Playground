@@ -1,0 +1,13 @@
+theme: jekyll-theme-cayman
+baseurl: /Delphi-Playground
+
+# --- Banner Content ---
+title: Delphi Playground
+description: Modern architectural patterns, techniques, and best practices for Object Pascal developers. From Fluent Helpers to Lock-Free Atomic Wrappers.
+
+# --- Optional: GitHub Buttons ---
+# This adds the "View on GitHub" and "Download" buttons to the banner
+show_downloads: true
+github:
+  is_project_page: true
+  repository_url: https://github.com/tregubovav-dev/Delphi-Playground

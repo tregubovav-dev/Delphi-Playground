@@ -38,8 +38,8 @@ jobs:
         run: |
           mkdir -p ._marp_output/Helpers/Slides
           mkdir -p ._marp_output/Records/Slides
-          marp "Source/Helpers/Slides/slides.md" -o "._marp_output/Helpers/Slides/slides.html"
-          marp "Source/Records/Slides/slides.md" -o "._marp_output/Records/Slides/slides.html"
+          marp ".pages/Helpers/Slides/slides.md" -o "._marp_output/Helpers/Slides/slides.html"
+          marp ".pages/Records/Slides/slides.md" -o "._marp_output/Records/Slides/slides.html"
 
       # --- Setup Ruby for Jekyll ---
       - name: Setup Ruby
@@ -57,14 +57,14 @@ jobs:
           mkdir -p _jekyll_src/Records/Slides
           
           # Inject Front Matter to index.md (This forces Jekyll to render it)
-          echo -e "---\nlayout: default\n---\n\n$(cat index.md)" > _jekyll_src/index.md
+          echo -e "---\nlayout: default\n---\n\n$(cat .pages/index.md)" > _jekyll_src/index.md
           
           # Inject Front Matter to Memos
-          echo -e "---\nlayout: default\n---\n\n$(cat Source/Helpers/Memo.md)" > _jekyll_src/Helpers/Memo.md
-          echo -e "---\nlayout: default\n---\n\n$(cat Source/Records/Memo.md)" > _jekyll_src/Records/Memo.md
+          echo -e "---\nlayout: default\n---\n\n$(cat .pages/Helpers/index.md)" > _jekyll_src/Helpers/Memo.md
+          echo -e "---\nlayout: default\n---\n\n$(cat .pages/Records/index.md)" > _jekyll_src/Records/Memo.md
           
           # Copy config and Marp HTML
-          cp _config.yml _jekyll_src/
+          cp .pages/_config.yml _jekyll_src/
           cp -r ._marp_output/* _jekyll_src/
           
           # Run Jekyll

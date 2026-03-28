@@ -1,3 +1,9 @@
+<style>
+  .page-header {
+    padding: 2rem 3rem !important; /* Reduces top/bottom padding */
+  }
+</style>
+
 # Delphi Playground: Modernizing Object Pascal
 
 Welcome to the **Delphi Playground**! This repository is a curated collection of architectural patterns, techniques, and best practices designed to modernize Object Pascal (Delphi) development. 
@@ -20,7 +26,7 @@ In this series, we explore how to use **Class and Record Helpers** to completely
 *   **Distinct Types:** Use `type TMyInt = type Integer` to attach domain logic to primitives without conflicting with standard RTL helpers.
 *   **Taming C-APIs:** Safely map sparse C-Enums, integer bitmasks, and Opaque Handles (`HKEY`, `HWND`) into clean, Object-Oriented Pascal interfaces.
 
-👉 **[Read the full article: Modernizing Pascal with Helpers ➔](Helpers/Memo.html)**  
+👉 **[Read the full article: Modernizing Pascal with Helpers ➔](Helpers/index.html)**  
 *(Includes presentation slides and code examples)*
 
 ---
@@ -37,7 +43,7 @@ In this series, we step beyond Helpers to build powerful, zero-overhead wrappers
 *   **Lock-Free Atomics:** Bake thread-safety directly into your types using `[Volatile]` fields and Compare-And-Swap (CAS) loops.
 *   **Smart Pointers & ARC:** Utilize Delphi 10.4+ Custom Managed Records (CMR) to implement Automatic Reference Counting (ARC) and true RAII (Resource Acquisition Is Initialization) for both value types and classes.
 
-👉 **[Read the full article: Advanced Records in Delphi ➔](Records/Memo.html)**  
+👉 **[Read the full article: Advanced Records in Delphi ➔](Records/index.html)**  
 *(Includes presentation slides and code examples)*
 
 ---

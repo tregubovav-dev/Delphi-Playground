@@ -46,7 +46,7 @@ This version reads like a sentence. It lowers cognitive load because the operati
 **The Discoverability Bonus:** 
 Beyond readability, Helpers fix IDE discoverability. Instead of guessing which unit contains the string manipulation function you need, you simply type `AStr.` and Code Insight (IntelliSense) immediately lists every available operation for that type.
 
-👉 **[See Demo: Introduction to Simple Types](https://github.com/tregubovav-dev/Delphi-Playground/tree/corrections/Source/Helpers/01%20-%20Introduction)**
+👉 **[See Demo: Introduction to Simple Types](https://github.com/tregubovav-dev/Delphi-Playground/tree/main/Source/Helpers/01%20-%20Introduction)**
 
 ## 2. Sustainability: The Inheritance Trap
 
@@ -81,7 +81,7 @@ Memo1.Lines.Append(OtherList);
 
 We write the functionality once, and it becomes accessible everywhere without breaking the visual designer.
 
-👉 **[See Demo: Class Helpers](https://github.com/tregubovav-dev/Delphi-Playground/tree/corrections/Source/Helpers/01%20-%20Introduction)**
+👉 **[See Demo: Class Helpers](https://github.com/tregubovav-dev/Delphi-Playground/tree/main/Source/Helpers/01%20-%20Introduction)**
 
 ## 3. Architecture: The Power of Distinct Types
 
@@ -121,7 +121,7 @@ end;
 
 This allows us to easily introduce strict domain logic (Validation, Formatting, State Checking) into legacy codebases with zero disruptions to the underlying data flow.
 
-👉 **[See Demos: Simple Types and Logic](https://github.com/tregubovav-dev/Delphi-Playground/tree/corrections/Source/Helpers/02%20-%20Simple%20types)**
+👉 **[See Demos: Simple Types and Logic](https://github.com/tregubovav-dev/Delphi-Playground/tree/main/Source/Helpers/02%20-%20Simple%20types)**
 
 ## 4. Advanced C-Interop: Taming Enums and Bitmasks
 
@@ -161,7 +161,7 @@ While Pascal allows explicitly assigned enums (`type TStatus = (sError = -1, sRe
 
 This approach keeps our business logic **Pure Pascal**. We can use `for..in` loops, Sets, and RTTI, while the Helper handles the ugly translation to `-1` or `1024` entirely behind the scenes.
 
-👉 **[See Demo: Enums and Sparse Mapping](https://github.com/tregubovav-dev/Delphi-Playground/tree/corrections/Source/Helpers/03%20-%20Enums%20and%20Sets)**
+👉 **[See Demo: Enums and Sparse Mapping](https://github.com/tregubovav-dev/Delphi-Playground/tree/main/Source/Helpers/03%20-%20Enums%20and%20Sets)**
 
 ### Scenario B: Safe Bitmasks
 
@@ -198,7 +198,7 @@ Flags :=[flsRead, flsAsync];
 C_SetFlags(Flags.ToInteger);
 ```
 
-👉 **[See Demo: Bitmasks and Sets](https://github.com/tregubovav-dev/Delphi-Playground/tree/corrections/Source/Helpers/03%20-%20Enums%20and%20Sets)**
+👉 **[See Demo: Bitmasks and Sets](https://github.com/tregubovav-dev/Delphi-Playground/tree/main/Source/Helpers/03%20-%20Enums%20and%20Sets)**
 
 ## 5. API Wrappers: Opaque Handles
 
@@ -233,7 +233,7 @@ end;
 
 This approach drastically enhances code clarity and type safety when dealing with raw OS handles.
 
-👉 **[See Demo: API Wrappers](https://github.com/tregubovav-dev/Delphi-Playground/tree/corrections/Source/Helpers/04%20-%20C%20API%20Wrappers)**
+👉 **[See Demo: API Wrappers](https://github.com/tregubovav-dev/Delphi-Playground/tree/main/Source/Helpers/04%20-%20C%20API%20Wrappers)**
 
 ## 6. Restrictions: Limitations & The Vision
 
