@@ -29,6 +29,29 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      # --- Prepare the _site directory for Jekyll ---
+      - name: Create _site directory
+        run: mkdir _site
+
+      - name: Copy root Markdown files to _site
+        run: |
+          cp index.md _site/
+          # Copy _config.yml if you have it (for Jekyll theme)
+          if [ -f _config.yml ]; then cp _config.yml _site/; fi
+        working-directory: ${{ github.workspace }}
+
+      - name: Copy Helpers Memo to _site
+        run: |
+          mkdir -p _site/Helpers/Slides
+          cp Source/Helpers/Slides/Memo.md _site/Helpers/
+        working-directory: ${{ github.workspace }}
+ 
+      - name: Copy Records Memo to _site
+        run: |
+          mkdir -p _site/Records/Slides
+          cp Source/Records/Slides/Memo.md _site/Records/
+        working-directory: ${{ github.workspace }}
+
       - name: Setup Node.js (for Marp)
         uses: actions/setup-node@v6
         with:
@@ -37,18 +60,13 @@ jobs:
       - name: Install Marp CLI
         run: npm install -g @marp-team/marp-cli
 
-      - name: Create Output Directories
-        run: |
-          mkdir -p public/helpers
-          mkdir -p public/records
-
       - name: Build Slides (Helpers)
         # Using --html to ensure raw HTML tags in markdown are rendered
-        run: marp "Source/Helpers/Slides/slides.md" -o "public/helpers/index.html" --html
+        run: marp "Source/Helpers/Slides/slides.md" -o "_site/Helpers/Slides/index.html" --html
 
       - name: Build Slides (Records)
         # Note: Checking path case sensitivity from repo structure
-        run: marp "Source/Records/slides/slides.md" -o "public/records/index.html" --html
+        run: marp "Source/Records/slides/slides.md" -o "_site/Records/Slides" --html
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v6
@@ -57,7 +75,7 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           # Upload the entire repository root (including the newly generated HTML slides)
-          path: '.'
+          path: '_site'
 
       - name: Deploy to GitHub Pages
         id: deployment
