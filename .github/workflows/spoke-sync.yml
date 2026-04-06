@@ -1,0 +1,72 @@
+name: Publish to Hub
+
+on:
+  push:
+    paths:
+      - '.pages/**'
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  publish-to-hub:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Spoke Repo
+        uses: actions/checkout@v6
+        with:
+          path: spoke-repo
+
+      - name: Checkout Hub Repo
+        uses: actions/checkout@v6
+        with:
+          repository: tregubovav-dev/tregubovav-dev.github.io
+          token: ${{ secrets.HUB_SYNC_PAT }}
+          path: hub-repo
+
+      - name: Sync Materials
+        run: |
+          # Extract the name of the Spoke repository cleanly
+          SPOKE_NAME=$(echo ${{ github.repository }} | cut -d'/' -f2)
+          echo "Syncing Spoke: $SPOKE_NAME"
+
+          # Use per-spoke subdirectory in _posts/ as the namespace — no filename prefix needed.
+          # Jekyll natively discovers posts in _posts/ subdirectories.
+          # Hub's own native posts remain flat at _posts/ root, avoiding all collisions.
+          mkdir -p "hub-repo/_posts/$SPOKE_NAME"
+          mkdir -p "hub-repo/slides/$SPOKE_NAME"
+
+          if [ -d "spoke-repo/.pages/_posts" ]; then
+            # Wipe the spoke's existing posts in the Hub to handle renames/deletes cleanly
+            rm -f "hub-repo/_posts/$SPOKE_NAME"/*.md
+
+            for post in spoke-repo/.pages/_posts/*.md; do
+              if [ -f "$post" ]; then
+                filename=$(basename "$post")
+                # Copy with the original filename preserved — the directory IS the namespace
+                cp "$post" "hub-repo/_posts/$SPOKE_NAME/$filename"
+                echo "Copied to _posts/$SPOKE_NAME/$filename"
+              fi
+            done
+          fi
+
+          if [ -d "spoke-repo/.pages/slides" ]; then
+            # Sync entire slides directory including sub-assets like images/
+            # --delete ensures removed slides in the Spoke are also removed from the Hub
+            rsync -avq --delete spoke-repo/.pages/slides/ "hub-repo/slides/$SPOKE_NAME/"
+            echo "Synced slides to slides/$SPOKE_NAME/"
+          fi
+
+      - name: Commit and Push to Hub
+        run: |
+          cd hub-repo
+          
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          
+          if git diff --staged --quiet; then
+             echo "No updates to sync."
+          else
+             git commit -m "chore: sync publishing materials from ${{ github.repository }}"
+             git push origin main
+          fi
